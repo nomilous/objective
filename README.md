@@ -7,6 +7,5 @@
 objective
 =========
 
-"What the dormouse said."
-- jeff[erson airp](http://www.youtube.com/watch?v=Vl89g2SwMh4)lane
+"What the dormouse said."  - Jeff[erson Airp](http://www.youtube.com/watch?v=Vl89g2SwMh4)lane
 
