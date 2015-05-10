@@ -1,13 +1,14 @@
 {
   "name": "objective",
   "description": "",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "bin": {
     "objective": "./bin/objective"
   },
   "dependencies": {
     "also": "0.0.13",
     "commander": "^2.8.1",
+    "mkpath": "^0.1.0",
     "prompt": "^0.2.14",
     "request": "^2.55.0"
   },
