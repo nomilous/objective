@@ -1,21 +1,18 @@
 {
   "name": "objective",
-  "description": "Realization maintenance.",
-  "version": "0.0.0",
-  "author": "nomilous <nomilous@gmail.com>",
-  "contributors": [
-    {
-      "name": "nomilous",
-      "email": "nomilous@gmail.com"
-    }
-  ],
-  "main": "lib/objective.js",
-  "dependencies": {},
+  "description": "",
+  "version": "0.0.1",
+  "bin": {
+    "objective": "./bin/objective"
+  },
+  "dependencies": {
+    "also": "0.0.13",
+    "commander": "^2.8.1",
+    "prompt": "^0.2.14",
+    "request": "^2.55.0"
+  },
   "devDependencies": {
-    "hound": "~1.0.4",
-    "should": "~1.3.0",
-    "mocha": "~1.13.0",
-    "coffee-script": "~1.6.3"
+    "ipso": "0.0.22"
   },
   "repository": "git@github.com:nomilous/objective.git"
 }

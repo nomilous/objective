@@ -1,9 +1,14 @@
-`npm install objective`
+`npm install objective -g`
 
-#### Version 0.0.0 
+#### Version 0.0.1 
 
 objective
 =========
 
-"What the dormouse said."  - [Jefferson Airplane](http://www.youtube.com/watch?v=Vl89g2SwMh4)
+Register new user
+-----------------
+
+```bash
+objective --register
+```
 
