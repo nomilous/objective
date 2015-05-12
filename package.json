@@ -7,10 +7,12 @@
   },
   "dependencies": {
     "also": "0.0.13",
+    "coffee-script": "^1.9.2",
     "commander": "^2.8.1",
     "mkpath": "^0.1.0",
     "prompt": "^0.2.14",
-    "request": "^2.55.0"
+    "request": "^2.55.0",
+    "socket.io-client": "^1.3.5"
   },
   "devDependencies": {
     "ipso": "0.0.22"

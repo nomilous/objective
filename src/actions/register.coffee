@@ -10,7 +10,7 @@ email = code = username = password = key = undefined
 
 module.exports = register =
 
-    do: (callback) ->
+    do: (program, callback) ->
 
         unless process.env.HOME?
             console.log 'missing HOME env variable'
@@ -164,11 +164,13 @@ module.exports = register =
 
                         (error, response, body) ->
 
-                            if response.statusCode == 500
+                            if response.statusCode >= 500
                                 console.log '\nAn error has occurred.'
                                 process.exit 1
 
-                            key = JSON.parse(body).key
+                            console.log body: body
+
+                            {key, uuid} = JSON.parse body
 
                             dir = process.env.HOME + '/.objective'
 
@@ -176,9 +178,12 @@ module.exports = register =
 
                             fs.writeFileSync process.env.HOME + '/.objective/user.json', JSON.stringify
 
+                                uuid: uuid
                                 username: username
                                 email: email
                                 key: key
+                                null
+                                4
 
                             console.log '\n-----> Created file ' + process.env.HOME + '/.objective/user.json'
 

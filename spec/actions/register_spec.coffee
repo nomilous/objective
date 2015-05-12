@@ -13,7 +13,7 @@ describe 'Register', ->
             prompt_password: deferred (action) -> action.resolve()
 
 
-        Register.do -> done()
+        Register.do {}, -> done()
 
 
 
@@ -30,7 +30,7 @@ describe 'Register', ->
                         field.should.equal 'email'
                         done()
 
-                Register.prompt_email()
+                Register.prompt_email {}, ->
 
 
 
