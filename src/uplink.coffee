@@ -31,6 +31,8 @@ module.exports =
         socket.on 'reconnect_failed', -> console.log 'reconnect failed after reconnectionAttempts'
 
 
+
+
         socket.on 'auth.good', ({online_users}) -> 
 
             console.log "online now: #{JSON.stringify online_users}"
@@ -39,4 +41,15 @@ module.exports =
         socket.on 'auth.bad', -> callback new Error 'Bad key or objective uuid.'
 
         socket.on 'auth.err', (e) -> callback e
+
+
+
+
+        socket.on 'user.joined', (user) ->
+
+            console.log "user joined: #{JSON.stringify user}"
+
+        socket.on 'user.left', (user) ->
+
+            console.log "user left: #{JSON.stringify user}"
 
