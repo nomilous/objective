@@ -12,7 +12,8 @@
     "mkpath": "^0.1.0",
     "prompt": "^0.2.14",
     "request": "^2.55.0",
-    "socket.io-client": "^1.3.5"
+    "socket.io-client": "^1.3.5",
+    "objective-spec": "0.0.1"
   },
   "devDependencies": {
     "ipso": "0.0.22"

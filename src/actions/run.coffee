@@ -18,6 +18,8 @@ module.exports = run =
                     file = file + ext unless stats.isDirectory()
 
         try
+
+            console.log 'loading objective from ' + file
             
             js = fs.readFileSync(file).toString()
             
@@ -28,6 +30,13 @@ module.exports = run =
                 js = '(' + js + ')'
 
             objective = eval js
+
+            if objective.module?
+
+                mod = require objective.module
+                name = objective.module.replace /^objective-/, ''
+                console.log "loading module #{objective.module} as #{name}"
+                eval "var #{name} = mod;"
 
             uplink.connect objective, (err) ->
 

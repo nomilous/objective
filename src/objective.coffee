@@ -8,9 +8,15 @@ program
 
     .option('-R, --register', 'Register new user.')
 
+    .option('-r, --reset', 'Re-register as existing user by email (forgot password).')
+
     .option('-C, --create', 'Create new objective.')
 
-    .option('-f, --file [file]', 'Specify objective file namepart.' )
+    .option('-S, --create-spec', 'Create new spec objective.')
+
+    .option('-T, --template [name]', 'Create new objective from template')
+
+    .option('-f, --file [file]', 'Specify objective file namepart.')
 
     .option('-F, --force', 'Force action.')
 
@@ -18,11 +24,16 @@ program
 
     .parse(process.argv)
 
-console.log 'TODO: --refresh-user (json)'
 
-if program.register then return require('./actions/register').do program, ->
+if program.register then return require('./actions/register').do program, false, ->
 
-if program.create then return require('./actions/create').do program, ->
+if program.reset then return require('./actions/register').do program, true, ->
+
+program.template ||= 'default'
+
+if program.create then return require('./actions/create').do program, program.template, ->
+
+if program.createSpec then return require('./actions/create').do program, 'spec', ->
 
 require('./actions/run').do program, ->
 

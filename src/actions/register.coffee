@@ -10,20 +10,20 @@ email = code = username = password = key = undefined
 
 module.exports = register =
 
-    do: (program, callback) ->
+    do: (program, refresh, callback) ->
 
         unless process.env.HOME?
             console.log 'missing HOME env variable'
             process.exit 1
 
-        register.prompt_email()
+        register.prompt_email(refresh)
         .then -> register.prompt_code()
         .then -> register.prompt_username()
         .then -> register.prompt_password()
         .then -> callback()
 
 
-    prompt_email: deferred (action) ->
+    prompt_email: deferred (action, refresh) ->
 
         retry = ->
 
@@ -35,7 +35,7 @@ module.exports = register =
 
                 email = res.email
 
-                request.post 'https://ipso.io/api/register/email/' + email, 
+                request.post 'https://ipso.io/api/register/email/' + email + '?refresh=' + refresh, 
 
                     (error, response, body) ->
 
@@ -44,7 +44,7 @@ module.exports = register =
                             process.exit 1
 
                         if response.statusCode == 403
-                            console.log '\nThat email address is already in use.'
+                            console.log '\nThat email address is already in use. (try --refresh)'
                             return retry()
 
                         if response.statusCode == 500
@@ -168,11 +168,13 @@ module.exports = register =
                                 console.log '\nAn error has occurred.'
                                 process.exit 1
 
-                            console.log body: body
-
                             {key, uuid} = JSON.parse body
 
                             dir = process.env.HOME + '/.objective'
+
+                            mkpath.sync dir
+
+                            dir = process.env.HOME + '/.objective/templates'
 
                             mkpath.sync dir
 
@@ -185,8 +187,62 @@ module.exports = register =
                                 null
                                 4
 
-                            console.log '\n-----> Created file ' + process.env.HOME + '/.objective/user.json'
+                            fs.writeFileSync process.env.HOME + '/.objective/templates/default.coffee', """
+                            uuid: '__UUID__'
+                            title: ''
+                            description: ''
+                            root: (done) ->
 
+                                done()
+
+                            """
+
+                            fs.writeFileSync process.env.HOME + '/.objective/templates/spec.coffee', """
+                            uuid: '__UUID__'
+                            title: ''
+                            description: ''
+                            module: 'objective-spec'
+                            root: (done) ->
+                                
+                                done()
+
+                            """
+
+                            fs.writeFileSync process.env.HOME + '/.objective/templates/default.js', """
+                            {
+                                uuid: '__UUID__',
+                                title: '',
+                                description: '',
+                                root: function(done) {
+
+                                    done()
+
+                                }
+                            }
+                            """
+
+                            fs.writeFileSync process.env.HOME + '/.objective/templates/spec.js', """
+                            {
+                                uuid: '__UUID__',
+                                title: '',
+                                description: '',
+                                module: 'objective-spec',
+                                root: function(done) {
+
+                                    done()
+
+                                }
+                            }
+                            """
+
+
+                            console.log '\n'
+                            console.log '-----> Created file ' + process.env.HOME + '/.objective/user.json'
+                            console.log '-----> Created file ' + process.env.HOME + '/.objective/templates/default.coffee'
+                            console.log '-----> Created file ' + process.env.HOME + '/.objective/templates/spec.coffee'
+                            console.log '-----> Created file ' + process.env.HOME + '/.objective/templates/default.js'
+                            console.log '-----> Created file ' + process.env.HOME + '/.objective/templates/spec.js'
+                            
                             console.log '\nRegistration complete.'
 
                             action.resolve()

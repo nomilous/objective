@@ -7,15 +7,15 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"  # pending cert
 
 module.exports = create = 
 
-    do: (program, callback) ->
+    do: (program, template, callback) ->
 
         user.load()
 
-        create.generate_objective(program).then ->
+        create.generate_objective(program, template).then ->
 
             callback()
 
-    generate_objective: deferred (action, program) ->
+    generate_objective: deferred (action, program, template) ->
 
         file = program.file || 'objective'
         if program.js then file = "#{file}.js" unless file.match /.js$/
@@ -26,11 +26,11 @@ module.exports = create =
             stats = fs.lstatSync file
             if stats.isDirectory()
                 console.log "Cannot overwrite directory #{file}"
-                return callback()
+                return action.resolve()
 
             unless program.force
                 console.log "Warning #{file} exists. Use --force to overwrite."
-                return callback()
+                return action.resolve()
 
         request.post
 
@@ -58,10 +58,16 @@ module.exports = create =
 
                 try
                     if program.js
-                        fs.writeFileSync file, "{\n    uuid: '#{uuid}',\n    title: '',\n    description: '',\n    root: function(done){\n\n    }\n}"
+                        templatePath = '/.objective/templates/' + template + '.js'
                     else
-                        fs.writeFileSync file, "uuid: '#{uuid}'\ntitle: ''\ndesciption: ''\nroot: (done) ->\n    "
+                        templatePath = '/.objective/templates/' + template + '.coffee'
+                    templatetxt = fs.readFileSync(process.env.HOME + templatePath).toString()
+                    templatetxt = templatetxt.replace /__UUID__/, uuid
+                    console.log '-----> Created file ' + file + ' from template ~' + templatePath
+                    console.log templatetxt
+                    fs.writeFileSync file, templatetxt
+                    
 
                 catch e
                     console.log e.toString()
-                    callback()
+                    action.resolve()

@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "repos": [
+    {
+      "root": true,
+      "workDir": ".",
+      "packageManager": "npm",
+      "remote.origin.url": "git@github.com:nomilous/objective.git",
+      "HEAD": "refs/heads/master",
+      "version": "ROOT_REPO_REF"
+    },
+    {
+      "root": false,
+      "workDir": "./node_modules/objective-spec",
+      "packageManager": "npm",
+      "remote.origin.url": "git@github.com:nomilous/objective-spec.git",
+      "HEAD": "refs/heads/master",
+      "version": "7360448ab46cced016544a645180b97f105bf920"
+    }
+  ]
+}

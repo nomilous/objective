@@ -36,9 +36,11 @@ module.exports =
         socket.on 'auth.good', ({online_users}) -> 
 
             console.log "online now: #{JSON.stringify online_users}"
-            # callback()
+            callback()
 
-        socket.on 'auth.bad', -> callback new Error 'Bad key or objective uuid.'
+        socket.on 'auth.bad', -> 
+
+            callback new Error 'Bad key or objective uuid.'
 
         socket.on 'auth.err', (e) -> callback e
 

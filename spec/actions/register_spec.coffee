@@ -13,7 +13,7 @@ describe 'Register', ->
             prompt_password: deferred (action) -> action.resolve()
 
 
-        Register.do {}, -> done()
+        Register.do {}, false, -> done()
 
 
 
@@ -30,7 +30,7 @@ describe 'Register', ->
                         field.should.equal 'email'
                         done()
 
-                Register.prompt_email {}, ->
+                Register.prompt_email {}, false, ->
 
 
 
@@ -53,14 +53,14 @@ describe 'Register', ->
 
                     post: (url, callback) ->
 
-                        url.should.equal 'https://ipso.io/api/register/email/test@test.com'
+                        url.should.equal 'https://ipso.io/api/register/email/test@test.com?refresh=true'
 
                         if count == 2 then return callback null, statusCode: 201
 
                         callback null, statusCode: 403 # exists already
 
 
-                Register.prompt_email().then -> 
+                Register.prompt_email(true).then -> 
 
                     count.should.equal 2
                     done()
