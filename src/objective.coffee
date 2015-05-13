@@ -22,6 +22,8 @@ program
 
     .option('-j, --js', 'Use javascript for --create.')
 
+    .option('-O, --offline', 'Run offline.')
+
     .parse(process.argv)
 
 

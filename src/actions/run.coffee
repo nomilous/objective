@@ -2,6 +2,12 @@ fs = require 'fs'
 
 uplink = require '../uplink'
 
+pipeline = require '../pipeline'
+
+recurse = require '../modules/recurse'
+
+prompt = require '../prompt'
+
 module.exports = run = 
 
     do: (program, callback) ->
@@ -22,14 +28,47 @@ module.exports = run =
             console.log 'loading objective from ' + file
             
             js = fs.readFileSync(file).toString()
-            
             if file.match /.coffee$/
                 coffee = require 'coffee-script'
+
+                # TODO: compile errors
                 js = coffee.compile js, bare: true
             else
                 js = '(' + js + ')'
 
+
+            # TODO: eval errors
+
             objective = eval js
+
+
+
+            run = ->
+
+                if program.offline
+
+                    return objective.root (err) ->
+
+                        console.log err.toString() if err?
+                        callback()
+
+
+                uplink.connect objective, (err) ->
+
+                    if err?
+
+                        console.log err.toString()
+                        process.exit 1
+
+                    objective.root (err) ->
+
+                        console.log err.toString() if err?
+
+                        uplink.disconnect()
+                        callback()
+
+
+            
 
             if objective.module?
 
@@ -38,14 +77,25 @@ module.exports = run =
                 console.log "loading module #{objective.module} as #{name}"
                 eval "var #{name} = mod;"
 
-            uplink.connect objective, (err) ->
+                # asyncronous module init
 
-                if err?
+                return mod.init
 
-                    console.log err.toString()
-                    process.exit 1
+                    pipe: pipeline
+                    prompt: prompt
 
-                objective.root ->
+                    (err) ->
+
+                        if err?
+                            
+                            console.log "error initializing module #{name}, #{err.toString()}"
+                            return callback()
+
+                        run() # with module
+
+            
+
+            run() # without module
 
         catch e
             

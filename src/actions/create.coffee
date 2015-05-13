@@ -63,7 +63,7 @@ module.exports = create =
                         templatePath = '/.objective/templates/' + template + '.coffee'
                     templatetxt = fs.readFileSync(process.env.HOME + templatePath).toString()
                     templatetxt = templatetxt.replace /__UUID__/, uuid
-                    console.log '-----> Created file ' + file + ' from template ~' + templatePath
+                    console.log '-----> Created file ' + file + ' (from template ~' + templatePath + ')'
                     console.log templatetxt
                     fs.writeFileSync file, templatetxt
                     

@@ -2,7 +2,13 @@ user = require './user'
 
 client = require 'socket.io-client'
 
+fs = require 'fs'
+
 user.load()
+
+socket = undefined
+
+version = JSON.parse(fs.readFileSync(__dirname + '/../package.json').toString()).version
 
 module.exports = 
 
@@ -16,9 +22,13 @@ module.exports =
 
         socket.on 'connect_timeout', -> console.log 'timeout'
 
-        socket.on 'connect', -> 
+        socket.on 'connect', ->
 
-            socket.emit 'auth', objective: objective, key: key
+            socket.emit 'auth',
+
+                version: version
+                objective: objective
+                key: key
 
         socket.on 'reconnect', (n) -> console.log 'reconnected ' + n
 
@@ -42,8 +52,11 @@ module.exports =
 
             callback new Error 'Bad key or objective uuid.'
 
-        socket.on 'auth.err', (e) -> callback e
+        socket.on 'auth.err', callback
 
+        socket.on 'auth.banner', (message) -> 
+
+            callback new Error message
 
 
 
@@ -54,4 +67,9 @@ module.exports =
         socket.on 'user.left', (user) ->
 
             console.log "user left: #{JSON.stringify user}"
+
+
+    disconnect: ->
+
+        socket.disconnect()
 

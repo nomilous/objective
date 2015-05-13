@@ -43,9 +43,20 @@ module.exports = register =
                             console.log error
                             process.exit 1
 
+                        if response.statusCode == 404
+                            if refresh
+                                console.log '\nNo such email address in system.'
+                            else
+                                console.log '\nAn error has occurred.'
+                            process.exit 1
+
                         if response.statusCode == 403
                             console.log '\nThat email address is already in use. (try --refresh)'
                             return retry()
+
+                        if response.statusCode == 429
+                            console.log '\nYour host or proxy has exceeded the request limit. Please try again later.'
+                            process.exit 1
 
                         if response.statusCode == 500
                             console.log '\nAn error has occurred.'
@@ -191,6 +202,7 @@ module.exports = register =
                             uuid: '__UUID__'
                             title: ''
                             description: ''
+                            private: true
                             root: (done) ->
 
                                 done()
@@ -201,6 +213,7 @@ module.exports = register =
                             uuid: '__UUID__'
                             title: ''
                             description: ''
+                            private: true
                             module: 'objective-spec'
                             root: (done) ->
                                 
@@ -213,6 +226,7 @@ module.exports = register =
                                 uuid: '__UUID__',
                                 title: '',
                                 description: '',
+                                private: true,
                                 root: function(done) {
 
                                     done()
@@ -226,6 +240,7 @@ module.exports = register =
                                 uuid: '__UUID__',
                                 title: '',
                                 description: '',
+                                private: true,
                                 module: 'objective-spec',
                                 root: function(done) {
 

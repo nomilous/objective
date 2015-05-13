@@ -11,11 +11,11 @@
     },
     {
       "root": false,
-      "workDir": "./node_modules/objective-spec",
+      "workDir": "./node_modules/objective-dev",
       "packageManager": "npm",
-      "remote.origin.url": "git@github.com:nomilous/objective-spec.git",
+      "remote.origin.url": "git@github.com:nomilous/objective-dev.git",
       "HEAD": "refs/heads/master",
-      "version": "7360448ab46cced016544a645180b97f105bf920"
+      "version": "1aab4287d4e67a10fe559f75979c6d3dfc081936"
     }
   ]
 }
