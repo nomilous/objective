@@ -4,11 +4,11 @@
 mkpath = require 'mkpath'
 fs = require 'fs'
 
-createEvent 'recurse.start'
-createEvent 'recurse.entering'
-createEvent 'recurse.found'
-createEvent 'recurse.end'
-createEvent 'recurse.error'
+createEvent 'files.recurse.start'
+createEvent 'files.recurse.entering'
+createEvent 'files.recurse.found'
+createEvent 'files.recurse.end'
+createEvent 'files.recurse.error'
 
 module.exports = (paths, optionsORcallback, callback) ->
 
@@ -30,7 +30,7 @@ module.exports = (paths, optionsORcallback, callback) ->
 
             do (path) -> deferred ({resolve, reject}) ->
 
-                emit 'recurse.start', 
+                emit 'files.recurse.start', 
 
                     path: path
 
@@ -42,7 +42,7 @@ module.exports = (paths, optionsORcallback, callback) ->
 
                             return reject err if err?
 
-                            emit 'recurse.end',
+                            emit 'files.recurse.end',
 
                                 path: path
 
@@ -54,7 +54,7 @@ module.exports = (paths, optionsORcallback, callback) ->
 
         (error) -> 
 
-            emit 'recurse.error', error, ->
+            emit 'files.recurse.error', error, ->
 
                 callback error
 
@@ -95,7 +95,7 @@ recurse = (paths, options, callback) ->
 
                         return reject e
 
-                emit 'recurse.entering',
+                emit 'files.recurse.entering',
 
                     path: path
 
@@ -134,7 +134,7 @@ recurse = (paths, options, callback) ->
 
                                 do (file) -> deferred ({resolve, reject}) ->
 
-                                    emit 'recurse.found',
+                                    emit 'files.recurse.found',
 
                                         path: file
 

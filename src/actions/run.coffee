@@ -25,7 +25,7 @@ module.exports = run =
 
         try
 
-            console.log 'loading objective from ' + file
+            # console.log 'loading objective from ' + file
             
             js = fs.readFileSync(file).toString()
             if file.match /.coffee$/
@@ -74,7 +74,7 @@ module.exports = run =
 
                 mod = require objective.module
                 name = objective.module.replace /^objective-/, ''
-                console.log "loading module #{objective.module} as #{name}"
+                # console.log "loading module #{objective.module} as #{name}"
                 eval "var #{name} = mod;"
 
                 # asyncronous module init
