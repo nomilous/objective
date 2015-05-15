@@ -189,6 +189,10 @@ module.exports = register =
 
                             mkpath.sync dir
 
+                            dir = process.env.HOME + '/.objective/templates/dev'
+
+                            mkpath.sync dir
+
                             fs.writeFileSync process.env.HOME + '/.objective/user.json', JSON.stringify
 
                                 uuid: uuid
