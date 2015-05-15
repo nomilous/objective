@@ -1,5 +1,7 @@
 {pipeline, deferred} = require 'also'
 
+# middleware style event pipeline
+
 module.exports = Pipeline =
 
     pipes: {}

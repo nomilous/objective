@@ -12,7 +12,9 @@ program
 
     .option('-C, --create', 'Create new objective.')
 
-    .option('-S, --create-spec', 'Create new spec objective.')
+    .option('-P, --private', 'To create objective as private.')
+
+    .option('-S, --create-dev', 'Create new dev objective.')
 
     .option('-T, --template [name]', 'Create new objective from template')
 
@@ -35,7 +37,7 @@ program.template ||= 'default'
 
 if program.create then return require('./actions/create').do program, program.template, ->
 
-if program.createSpec then return require('./actions/create').do program, 'spec', ->
+if program.createDev then return require('./actions/create').do program, 'dev', ->
 
 require('./actions/run').do program, ->
 

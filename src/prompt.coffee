@@ -1,14 +1,12 @@
 {createEvent, emit} = require './pipeline'
 
-console.log 'todo: fix ^r then enter on empty result running command'
-
 createEvent 'prompt.commands.register.ask'
 
 keypress = require 'keypress'
 
 fs = require 'fs'
 
-{normalize} = require 'path'
+{normalize, sep} = require 'path'
 
 command = ''
 
@@ -26,7 +24,9 @@ running = false
 
 bell = ->  process.stdout.write '\u0007'
 
-commands = 'help': 
+commands = 'help':
+
+    # build the help command in
     
     run: (args, callback) -> 
 
@@ -39,6 +39,8 @@ commands = 'help':
     """
 
     autoComplete: (args, callback) ->
+
+        # help autocomplete 2nd arg from all possible commands
 
         callback null, (for cmd of commands
 
@@ -68,7 +70,7 @@ showHelp = (args, callback) ->
         return callback()
 
     console.log()
-    console.log "help [command]           Per command help"
+    console.log "help [command]           Per command help."
     console.log()   
 
     for cmd of commands
@@ -94,6 +96,9 @@ writePrompt = (newline) ->
     process.stdout.cursorTo promptWidth + command.length
 
 appendToCommand = (char) ->
+
+    # person entered key, confangled to support arrow reposition (offset) of cursor
+    # to insert text in the middle of command
 
     chars = []
     chars.push ch for ch in command
@@ -129,8 +134,12 @@ runCommand = ->
             callback = (err, res) ->
 
                 running = false
-                if err? then return console.log "#{err.toString()}"
-                if res? then return console.log res
+                if err? 
+                    console.log()
+                    console.log "#{err.toString()}"
+                else
+                    console.log()
+                    console.log res
                 writePrompt true
 
             callback.write = (text) ->
@@ -163,15 +172,23 @@ runCommand = ->
 
 lastPart = undefined
 
-autoCompleteStartsWith = (part, array) ->
+autoCompleteStartsWith = (args, array) ->
+
+    if array.length == 0 then array = null
+
+    part = try args[args.length - 1]
 
     part ||= ''
+
+    # using the partially completed last argument
 
     accum = ''
 
     if part.length > 0
 
-        newArray = [] 
+        newArray = []
+
+        # assemble newArray with autocompletion possibilities that match
 
         array.map (word)->
 
@@ -185,15 +202,27 @@ autoCompleteStartsWith = (part, array) ->
 
         else
 
+            # nothing matches
+
             bell()
             return [null, false, []]
 
 
-    for col in [0..99]
+    shortest = 1000
+
+    for word in array
+
+        shortest = word.length unless shortest < word.length
+
+    # match by column through the array to find the longest common match
+
+    for col in [0..shortest]
 
         letter = undefined
 
         for word in array
+
+            continue unless word[col]
 
             letter ||= word[col]
 
@@ -201,7 +230,11 @@ autoCompleteStartsWith = (part, array) ->
 
                 return [accum, false, array]
 
-        accum += letter
+        accum += letter if letter?
+
+    # accumulated longest common match so return the 
+    # accumulated match and a flag indicating an exact match
+    # and the remaining possible autocompletions an array 
 
     return [accum, false, array]
 
@@ -209,11 +242,19 @@ writeAutoCompletePosibilities = (array, type) ->
 
     if type == 'path'
 
-        last = command.split(' ').pop()
-
         nextPaths = for path in array
 
-            path.substr last.length
+            parts = path.split sep
+
+            last = parts.length - 1
+
+            if parts[last] == ''
+
+                path = parts[last - 1] + sep
+
+            else
+
+                path = parts[last]
 
         console.log "\n\n#{nextPaths.join '\n'}"
 
@@ -221,17 +262,17 @@ writeAutoCompletePosibilities = (array, type) ->
 
     console.log "\n\n#{array.join '\n'}"
 
-autoCompleteAssemble = (possibilities, args, func, [part, fullMatch, matches]) ->
+autoCompleteAssemble = (possibles, args, completion, [part, fullMatch, matches]) ->
 
     return unless part?
 
     type = undefined
 
-    try type = func.type
+    try type = completion.type
 
     if fullMatch
 
-        command = command.substr 0, command.length - args[0].length
+        command = command.substr 0, command.length - args[args.length - 1].length
         command += part + ' '
         process.stdout.clearLine()
         process.stdout.cursorTo 0
@@ -241,7 +282,7 @@ autoCompleteAssemble = (possibilities, args, func, [part, fullMatch, matches]) -
 
     if part.length == 0
 
-        writeAutoCompletePosibilities possibilities, type
+        writeAutoCompletePosibilities possibles, type
         writePrompt true
         lastPart = undefined
         return
@@ -253,7 +294,7 @@ autoCompleteAssemble = (possibilities, args, func, [part, fullMatch, matches]) -
         console.log()
 
     lastPart = part
-    command = command.substr 0, command.length - args[0].length
+    command = command.substr 0, command.length - args[args.length - 1].length
     command += part
     process.stdout.clearLine()
     process.stdout.cursorTo 0
@@ -273,59 +314,60 @@ autoComplete = ->
     cmd = args[0]
     args = args[1..]
 
-    if commands[cmd]?
+    if commands[cmd]? and args.length > 0
 
-        func = commands[cmd].autoComplete
+        # got command and some arguments so ask the plugin for autocomplete posibilities
 
-        if typeof func == 'function'
+        try commands[cmd].autoComplete args, (err, possibles) ->
 
-            try commands[cmd].autoComplete args, (err, possibilities) ->
-
-                if err?
-
-                    console.log()
-                    console.log "Error in autoComplete #{err.toString()}"
-                    command = ''
-                    writePrompt true
-
-                if args.length > 1
-
-                    console.log()
-                    console.log "Only first argument cam be auto completed."
-                    writePrompt true
-                    return
-
-                autoCompleteAssemble possibilities, args, func, autoCompleteStartsWith args[0], possibilities
-
-            catch err
+            if err?
 
                 console.log()
                 console.log "Error in autoComplete #{err.toString()}"
                 command = ''
                 writePrompt true
+                return
 
-        else if func.type == 'path'
+            unless possibles 
 
+                bell()
+                return
 
+            if possibles.constructor.name == 'Array'
 
-            # path = func.startIn || ''
+                # autocomplete from array of possibilities
 
-            # if func.startIn? and command.indexOf(func.startIn) < 0
+                return autoCompleteAssemble possibles, args, null, autoCompleteStartsWith args, possibles
 
-            #     command = command + func.startIn
-            #     process.stdout.clearLine()
-            #     process.stdout.cursorTo 0
-            #     writePrompt()
+            return unless possibles.type == 'path'
 
-            
-
-            args = command.split ' '
-            cmd = args[0]
-            args = args[1..]
+            # plugin has specified to autocomplete from directory so 
 
             path = args[args.length - 1]
 
-            console.log p: path
+            parts = path.split sep
+
+            file = parts.pop()
+
+            path = parts.join(sep) + sep
+
+            if path == sep
+
+                unless args[args.length - 1][0] == '/'  # windows..!
+
+                    path = '' unless args[args.length - 1] == sep
+
+            try
+
+                stat = fs.lstatSync path
+
+                if stat.isDirectory()
+
+                    path = normalize path + sep
+
+            catch
+
+                path = '.' + sep
 
             possibilities = []
 
@@ -333,15 +375,15 @@ autoComplete = ->
 
             for f in contents
 
-                f = normalize path + '/' + f
+                f = normalize path + sep + f
 
                 try
                     
                     stat = fs.lstatSync f
 
-                    f += '/' if stat.isDirectory()
+                    f += sep if stat.isDirectory()
 
-                    if func.ignoreFiles
+                    if possibles.onlyDirectories
 
                         possibilities.push f if stat.isDirectory()
                         continue
@@ -351,37 +393,74 @@ autoComplete = ->
                 catch e
                     
                     console.log()
-                    console.log "Error in autoComplete #{err.toString()}"
+                    console.log "Error in autoComplete #{e.toString()}"
                     writePrompt true
 
-            autoCompleteAssemble possibilities, args, func, autoCompleteStartsWith args[0], possibilities
+            if possibilities.length == 0
 
-            if command.match /\/\s$/
+                bell()
+                return
 
-                command = command.substr 0, command.length - 1
-                process.stdout.clearLine()
-                process.stdout.cursorTo 0
-                writePrompt()
+            autoCompleteAssemble possibilities, args, possibles, autoCompleteStartsWith args, possibilities
+
+            type = possibles.type || ''
+
+            if type == 'path'
+
+                unless args[args.length - 1].length == 0
+
+                    if command.match /\/\s$/
+
+                        command = command.substr 0, command.length - 1
+                        process.stdout.clearLine()
+                        process.stdout.cursorTo 0
+                        writePrompt()
+
+        catch err
+
+            console.log()
+            console.log "Error in autoComplete #{err.toString()}"
+            console.log err.stack
+            command = ''
+            writePrompt true
 
         return
+    
+
+    # got no full command so accumulate possibilities from commands  
 
     possibilities = (for cmd of commands
         cmd )
 
-    autoCompleteAssemble possibilities, [command], null, autoCompleteStartsWith command, possibilities
+    autoCompleteAssemble possibilities, [command], null, autoCompleteStartsWith [command], possibilities
 
     if command.match /\s$/
 
+        # matched a full command so show usage
+
         cmd = command.substr 0, command.length - 1
 
-        func = commands[cmd].autoComplete
+        for line in commands[cmd].help.split '\n'
 
-        if func.type == 'path' and func.startIn?
+            if line.match /Usage\:/
 
-            command = cmd + ' ' + func.startIn
-            process.stdout.clearLine()
-            process.stdout.cursorTo 0
-            writePrompt()
+                process.stdout.clearLine()
+                process.stdout.cursorTo 0
+                console.log line
+                console.log()
+
+
+        commands[cmd].autoComplete [''], (err, res) ->
+
+            if res.type == 'path' and res.startIn?
+
+                # the plugin says the type is path and has a default starting path so
+                # push the starting path onto the command
+
+                command = cmd + ' ' + res.startIn
+                process.stdout.clearLine()
+                process.stdout.cursorTo 0
+                writePrompt()
     
 
 historyFile = process.env.HOME + '/.objective/command_history'
@@ -454,7 +533,10 @@ updateSearch = (start = 0) ->
         found = true
         break
 
-    postPrompt = '\':' unless found
+    unless found
+        command = command.substr 0, command.length - 1
+        postPrompt = '\':'
+        bell()
 
     process.stdout.clearLine()
     process.stdout.cursorTo 0
@@ -463,6 +545,7 @@ updateSearch = (start = 0) ->
 endSearch = ->
 
     command = history[searchLine - 1] or ''
+    command = '' if postPrompt.length < 3
     postPrompt = ''
     setPrompt '> '
     process.stdout.clearLine()
@@ -495,6 +578,8 @@ cursorScroll = (direction) ->
 
 backspace = ->
 
+    # confangled to delete chars from middle of command
+
     return if command.length == 0
     position = command.length - offset - 1
     return if position < 0
@@ -511,6 +596,9 @@ backspace = ->
 
 
 module.exports = (done) ->
+
+    # create registrar and emit for listening modules to 
+    # register their command line functions
 
     registrar = {}
 
@@ -536,13 +624,15 @@ module.exports = (done) ->
 
         return done err if err?
 
+        # all modules registered commands ok, hijack raw stdin and start the prompt
+
         keypress process.stdin
 
         process.stdin.setRawMode true
 
         process.stdin.on 'keypress', (ch, key) ->
 
-            return if running
+            return if running # a command is running, TODO: ^c (to stop somehow)
 
             try if key.name == 'return'
 
@@ -612,10 +702,12 @@ module.exports = (done) ->
             # console.log key: key
 
         console.log()
-        console.log "    help . . gets some"
-        console.log "    tab  . . auto completes command ((Twice)"
-        console.log "    ^c . . . quits or clearsline"
+        console.log()
+        console.log "    help . . provides"
+        console.log "    tab  . . auto-completes command ((Twice)"
+        console.log "    ^c . . . quits or clears line"
         console.log "    ^r . . . reverse searches command history"
+        console.log "             (tab chooses, return runs)"
         console.log()
         console.log()
 

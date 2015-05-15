@@ -202,19 +202,19 @@ module.exports = register =
                             uuid: '__UUID__'
                             title: ''
                             description: ''
-                            private: true
+                            private: __PRIVATE__
                             root: (done) ->
 
                                 done()
 
                             """
 
-                            fs.writeFileSync process.env.HOME + '/.objective/templates/spec.coffee', """
+                            fs.writeFileSync process.env.HOME + '/.objective/templates/dev.coffee', """
                             uuid: '__UUID__'
                             title: ''
                             description: ''
-                            private: true
-                            module: 'objective-spec'
+                            private: __PRIVATE__
+                            modules: ['objective-dev']
                             root: (done) ->
                                 
                                 done()
@@ -226,7 +226,7 @@ module.exports = register =
                                 uuid: '__UUID__',
                                 title: '',
                                 description: '',
-                                private: true,
+                                private: __PRIVATE__,
                                 root: function(done) {
 
                                     done()
@@ -235,28 +235,63 @@ module.exports = register =
                             }
                             """
 
-                            fs.writeFileSync process.env.HOME + '/.objective/templates/spec.js', """
+                            fs.writeFileSync process.env.HOME + '/.objective/templates/dev.js', """
                             {
                                 uuid: '__UUID__',
                                 title: '',
                                 description: '',
-                                private: true,
-                                module: 'objective-spec',
+                                private: __PRIVATE__,
+                                modules: ['objective-dev'],
                                 root: function(done) {
 
                                     done()
 
                                 }
                             }
+                            """
+
+                            fs.writeFileSync process.env.HOME + '/.objective/templates/dev/default_spec.js', """
+                            {
+                                uuid: '__UUID__',
+                                title: '__TITLE__',
+                                description: '',
+                                private: __PRIVATE__,
+                                modules: [],
+                                root: function() {
+
+                                    context('', function() {
+
+                                        it('');
+
+                                    });
+                                }
+                            }
+                            """
+
+                            fs.writeFileSync process.env.HOME + '/.objective/templates/dev/default_spec.coffee', """
+                            uuid: '__UUID__'
+                            title: '__TITLE__'
+                            description: ''
+                            private: __PRIVATE__
+                            modules: []
+                            root: ->
+                                
+                                context '', ->
+
+                                    it ''
+
                             """
 
 
                             console.log '\n'
                             console.log '-----> Created file ' + process.env.HOME + '/.objective/user.json'
                             console.log '-----> Created file ' + process.env.HOME + '/.objective/templates/default.coffee'
-                            console.log '-----> Created file ' + process.env.HOME + '/.objective/templates/spec.coffee'
+                            console.log '-----> Created file ' + process.env.HOME + '/.objective/templates/dev.coffee'
                             console.log '-----> Created file ' + process.env.HOME + '/.objective/templates/default.js'
-                            console.log '-----> Created file ' + process.env.HOME + '/.objective/templates/spec.js'
+                            console.log '-----> Created file ' + process.env.HOME + '/.objective/templates/dev.js'
+                            console.log '-----> Created file ' + process.env.HOME + '/.objective/templates/dev/default_spec.js'
+                            console.log '-----> Created file ' + process.env.HOME + '/.objective/templates/dev/default_spec.coffee'
+
                             
                             console.log '\nRegistration complete.'
 
