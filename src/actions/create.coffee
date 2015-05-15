@@ -68,6 +68,7 @@ module.exports = create =
                         console.log 'Error: Missing templates. Try --register'
                         action.resolve()
                         return
+                    
                     templatetxt = templatetxt.replace /__UUID__/, uuid
                     templatetxt = templatetxt.replace /__PRIVATE__/, program.private
                     console.log '-----> Created file ' + file + ' (from template ~' + templatePath + ')'

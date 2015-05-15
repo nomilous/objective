@@ -139,7 +139,7 @@ runCommand = ->
                     console.log "#{err.toString()}"
                 else
                     console.log()
-                    console.log res
+                    console.log res if res?
                 writePrompt true
 
             callback.write = (text) ->
