@@ -203,86 +203,127 @@ module.exports = register =
                                 4
 
                             fs.writeFileSync process.env.HOME + '/.objective/templates/default.coffee', """
-                            uuid: '__UUID__'
-                            title: ''
-                            description: ''
-                            private: __PRIVATE__
-                            root: (done) ->
+                            require('objective')
 
-                                done()
+                                uuid: '__UUID__'
+                                title: ''
+                                description: ''
+                                private: __PRIVATE__
+                                plugins: []
+
+                            .run (e) ->
+
+                                return console.log e if e?
 
                             """
 
                             fs.writeFileSync process.env.HOME + '/.objective/templates/dev.coffee', """
-                            uuid: '__UUID__'
-                            title: ''
-                            description: ''
-                            private: __PRIVATE__
-                            modules: ['objective-dev']
-                            root: (done) ->
-                                
-                                done()
+                            require('objective')
+
+                                uuid: '__UUID__'
+                                title: ''
+                                description: ''
+                                private: __PRIVATE__
+                                plugins: ['objective-dev']
+
+                            .run (e) ->
+
+                                return console.log e if e?
+
+                                {prompt, recurse} = objective
+
+                                dev.testDir = 'spec'
+                                dev.sourceDir = 'src'
+                                dev.compileTo = 'lib'
+
+                                recurse ['spec', 'src'], create: true, (e) -> 
+
+                                    return console.log e if e?
+
+                                    prompt()
 
                             """
 
                             fs.writeFileSync process.env.HOME + '/.objective/templates/default.js', """
-                            {
+                            require('objective')({
+
                                 uuid: '__UUID__',
                                 title: '',
                                 description: '',
                                 private: __PRIVATE__,
-                                root: function(done) {
+                                plugins: []
 
-                                    done()
+                            }).run(function(e){
 
-                                }
-                            }
+                                if (e) return console.log(e);
+
+                            });
                             """
 
                             fs.writeFileSync process.env.HOME + '/.objective/templates/dev.js', """
-                            {
+                            require('objective')({
+
                                 uuid: '__UUID__',
                                 title: '',
                                 description: '',
                                 private: __PRIVATE__,
-                                modules: ['objective-dev'],
-                                root: function(done) {
+                                plugins: ['objective-dev']
 
-                                    done()
+                            }).run(function(e){
 
-                                }
-                            }
+                                if (e) return console.log(e);
+
+                                dev.testDir = 'spec'
+                                dev.sourceDir = 'lib'
+
+                                objective.recurse(['spec'], {create: true}, function(e) {
+
+                                    //todo: watch lib to run spec on change
+
+                                    if (e) return console.log(e);
+
+                                    objective.prompt();
+
+                                });
+
+                            });
                             """
 
                             fs.writeFileSync process.env.HOME + '/.objective/templates/dev/default_spec.js', """
-                            {
+                            require('objective')({
+
                                 uuid: '__UUID__',
                                 title: '__TITLE__',
                                 description: '',
                                 private: __PRIVATE__,
-                                modules: [],
-                                root: function() {
+                                plugins: ['objective-dev']
 
-                                    context('', function() {
+                            }).run(function(e){
 
-                                        it('');
+                                if (e) return console.log(e);
 
-                                    });
-                                }
-                            }
+                                context('', function(){
+
+                                    it('');
+
+                                });
+                            });
                             """
 
                             fs.writeFileSync process.env.HOME + '/.objective/templates/dev/default_spec.coffee', """
-                            uuid: '__UUID__'
-                            title: '__TITLE__'
-                            description: ''
-                            private: __PRIVATE__
-                            modules: []
-                            root: ->
-                                
-                                context '', ->
+                            require('objective')
 
-                                    it ''
+                                uuid: '__UUID__'
+                                title: '__TITLE__'
+                                description: ''
+                                private: __PRIVATE__
+                                plugins: ['objective-dev']
+
+                            .run (e) ->
+
+                                return console.log e if e?
+
+                                context '', -> it ''
 
                             """
 

@@ -1,3 +1,5 @@
+return
+
 user = require './user'
 
 client = require 'socket.io-client'

@@ -1,6 +1,7 @@
 user = require '../user'
 request = require 'request'
 fs = require 'fs'
+uuid = require 'uuid'
 {deferred} = require 'also'
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"  # pending cert
@@ -9,13 +10,17 @@ module.exports = create =
 
     do: (program, template, callback) ->
 
-        user.load()
+        user.load() unless program.offline
 
         create.generate_objective(program, template).then ->
 
             callback()
 
     generate_objective: deferred (action, program, template) ->
+
+        unless program.private?
+
+            program.private = false
 
         file = program.file || 'objective'
         if program.js then file = "#{file}.js" unless file.match /.js$/
@@ -25,12 +30,110 @@ module.exports = create =
         try
             stats = fs.lstatSync file
             if stats.isDirectory()
-                console.log "Cannot overwrite directory #{file}"
+                console.log "\nCannot overwrite directory '#{file}'"
                 return action.resolve()
 
             unless program.force
-                console.log "Warning #{file} exists. Use --force to overwrite."
+                console.log "\nError '#{file}' exists. Use --force to overwrite."
                 return action.resolve()
+
+        if program.js
+            templatePath = process.env.HOME + '/.objective/templates/' + template + '.js'
+        else
+            templatePath = process.env.HOME + '/.objective/templates/' + template + '.coffee'
+
+        createFromTemplate = (template, Uuid) ->
+
+            Uuid ||= uuid.v4()
+
+            try
+
+                templatetxt = undefined
+                try
+                    templatetxt = fs.readFileSync(templatePath).toString()
+                catch
+                    console.log "\nError: Missing templates. Try --register"
+                    action.resolve()
+                    return
+                
+                templatetxt = templatetxt.replace /__UUID__/, Uuid
+                templatetxt = templatetxt.replace /__PRIVATE__/, program.private
+
+                try
+
+                    fs.writeFileSync file, templatetxt
+                    console.log '\n-----> Created file ' + file + ' (from template ~' + templatePath + ')'
+                    action.resolve()
+
+                catch e
+                    
+                    console.log e.toString()
+                    action.resolve()
+                
+            catch e
+
+                console.log e.toString()
+                action.resolve()
+
+
+        if program.offline
+
+            try
+                
+                stat = fs.lstatSync templatePath
+                return createFromTemplate template
+            
+            catch e
+                
+                console.log "\nWarning: Missing template '#{templatePath}'"
+
+            if program.js
+
+                content = """
+                require('objective')({
+
+                    uuid: '#{uuid.v4()}',
+                    title: '',
+                    description: '',
+                    private: #{program.private},
+                    plugins: []
+
+                }).run(function(e){
+
+                    if (e) return console.log(e);
+
+                });
+                """
+
+            else
+
+                content = """
+                require('objective')
+
+                    uuid: '#{uuid.v4()}'
+                    title: ''
+                    description: ''
+                    private: #{program.private}
+                    plugins: []
+
+                .run (e) ->
+
+                    return console.log e if e?
+
+                """
+
+            try
+                fs.writeFileSync file, content
+                console.log "\n-----> Created file " + file
+                action.resolve()
+                return
+            
+            catch e
+
+                console.log e.toString()
+                action.resolve()
+                return
+
 
         request.post
 
@@ -54,28 +157,7 @@ module.exports = create =
                     console.log 'An error has occurred.'
                     process.exit 1
 
-                {uuid} = JSON.parse body
+                {Uuid} = JSON.parse body
 
-                try
-                    if program.js
-                        templatePath = '/.objective/templates/' + template + '.js'
-                    else
-                        templatePath = '/.objective/templates/' + template + '.coffee'
-                    templatetxt = undefined
-                    try
-                        templatetxt = fs.readFileSync(process.env.HOME + templatePath).toString()
-                    catch
-                        console.log 'Error: Missing templates. Try --register'
-                        action.resolve()
-                        return
-                    
-                    templatetxt = templatetxt.replace /__UUID__/, uuid
-                    templatetxt = templatetxt.replace /__PRIVATE__/, program.private
-                    console.log '-----> Created file ' + file + ' (from template ~' + templatePath + ')'
-                    console.log templatetxt
-                    fs.writeFileSync file, templatetxt
-                    
+                createFromTemplate template, Uuid
 
-                catch e
-                    console.log e.toString()
-                    action.resolve()

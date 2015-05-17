@@ -1,7 +1,8 @@
-{createEvent, emit} = require '../pipeline'
+{createEvent, emit} = require './pipeline'
 {pipeline, deferred} = require 'also'
 {normalize} = require 'path'
 mkpath = require 'mkpath'
+isBinaryFile = require 'isBinaryFile'
 fs = require 'fs'
 
 createEvent 'files.recurse.start'
@@ -9,8 +10,13 @@ createEvent 'files.recurse.entering'
 createEvent 'files.recurse.found'
 createEvent 'files.recurse.end'
 createEvent 'files.recurse.error'
+createEvent 'files.recurse.load?'
+createEvent 'files.recurse.load.fatal?'
+createEvent 'files.watch.reload?'
 
 module.exports = (paths, optionsORcallback, callback) ->
+
+    console.log "Recursing #{JSON.stringify paths}"
 
     options = optionsORcallback
 
@@ -138,10 +144,58 @@ recurse = (paths, options, callback) ->
 
                                         path: file
 
-                                        (err) -> 
+                                        (err) ->
 
                                             return reject err if err?
-                                            resolve()
+
+                                            return resolve() if isBinaryFile file
+
+
+                                            fs.watchFile file, interval: 100, (curr, prev) ->
+
+                                                return unless prev.mtime < curr.mtime
+
+                                                emit 'files.watch.reload?', file, (err) ->
+
+                                                    return if err?
+
+                                                    try
+
+                                                        filename = process.cwd() + '/' + file
+                                                        delete require.cache[filename]
+                                                        require filename
+
+                                                    catch e
+
+                                                        console.log "\nError loading '#{filename}'"
+                                                        console.log e.stack
+
+
+                                            emit 'files.recurse.load?', file, (err) ->
+
+                                                return resolve() if err?
+
+                                                objective.loading = file
+
+                                                try
+                                                    
+                                                    require process.cwd() + '/' + file
+
+                                                    resolve()
+
+                                                catch e
+                                                    
+                                                    return emit 'files.recurse.load.fatal?',
+
+                                                        file: file
+                                                        error: e
+
+                                                        (err) ->
+
+                                                            return reject err if err?
+                                                            resolve()
+                                                
+
 
                         ).then(
 

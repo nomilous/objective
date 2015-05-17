@@ -469,9 +469,9 @@ historyCursor = 0
 
 latestCommand = ''
 
-history = []
-
 history = try fs.readFileSync(historyFile).toString().trim().split '\n'
+
+history ||= []
 
 process.on 'exit', -> try fs.writeFileSync historyFile, history.join '\n'
 

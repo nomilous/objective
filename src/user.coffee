@@ -17,7 +17,16 @@ module.exports =
             
             if e.errno == 34
 
-                console.log 'No user. Use --register'
+                console.log """
+
+                Missing user.
+
+                --register (To create one)
+                --offline  (To not need one)
+
+                See: https://ipso.io
+
+                """
                 process.exit 1
 
             console.log e.toString()

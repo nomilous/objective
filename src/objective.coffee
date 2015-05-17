@@ -1,43 +1,184 @@
+Object.defineProperty global, 'objective',
+
+    writable: false
+    
+    value: {}
+    
+program = require './cli'
+
+return if program.stop
+
+{deferred, pipeline} = require 'also'
+
+path = require 'path'
+
 fs = require 'fs'
 
-program = require 'commander'
+required = {}
 
-program
+module.exports = (config = {}) ->
+
+    if objective.root?
+
+        # loading child objective (from objective.recurse)
+
+        objective.root.children ||= {}
+
+        if objective.root.children[config.uuid]?
+
+            oldConfig = objective.root.children[config.uuid].root
+
+            console.log "Updating objective from '#{oldConfig.filename}'"
+
+            config.filename = oldConfig.filename
+
+            # reloading changed child objective
+
+            # # # console.log changed: config.uuid
+
+            objective.root.children[config.uuid] = root: config
+
+            objective.root.children[config.uuid].doRun = true
+
+        else
+
+            config.filename = objective.loading
+
+            console.log "Loading objective from '#{config.filename}'"
+
+            objective.root.children[config.uuid] = root: config
+
+        return run: (fn) ->
+
+            # run, for child objectives
+
+            objective.root.children[config.uuid].run = fn
+
+            if program.run or objective.root.children[config.uuid].doRun
+
+                for moduleFile of require.cache
+
+                    continue if required[moduleFile]
+
+                    delete require.cache[moduleFile]
+
+                console.log "Running objective from '#{config.filename}'"
+                
+                try
+
+                    fn()
+
+                catch e
+
+                    console.log e.stack + '\n'
+
+
+    objective.root = config
+
+    run = (e) ->
+
+        console.log 'Missing .run(fn)'
+        console.log e.toString() if e?
+
+    loadGlobal = (name, path) ->
+
+        if objective[name]?
+
+            console.log "Warning: global #{name} no loaded."
+            return
+
+        # console.log "Loading global '#{name}'"
+        objective[name] = require path
+        objective.coffee.register() if name == 'coffee'
+
+
+    loadGlobal 'recurse', './globals/recurse'
+    loadGlobal 'coffee', 'coffee-script'
+    loadGlobal 'uplink', './globals/uplink'
+    loadGlobal 'prompt', './globals/prompt'
+    loadGlobal 'pipe', './globals/pipeline'
+
+
+    # plugins should be initialized asyncronously via plugin.init()
     
-    .version(JSON.parse(fs.readFileSync(__dirname + '/../package.json')).version)
+    config.plugins ||= []
 
-    .option('-R, --register', 'Register new user.')
+    pipeline(
 
-    .option('-r, --reset', 'Re-register as existing user by email (forgot password).')
+        for moduleName in config.plugins
 
-    .option('-C, --create', 'Create new objective.')
+            do (moduleName) -> deferred ({resolve, reject}) ->
 
-    .option('-P, --private', 'To create objective as private.')
+                name = moduleName.split(path.sep).pop().replace /^objective-/, ''
 
-    .option('-S, --create-dev', 'Create new dev objective.')
+                if name.match /[-\._]/
 
-    .option('-T, --template [name]', 'Create new objective from template')
+                    parts = name.split /[-\._]/
 
-    .option('-f, --file [file]', 'Specify objective file namepart.')
+                    camel = parts[0]
 
-    .option('-F, --force', 'Force action.')
+                    for i in [1..parts.length - 1]
 
-    .option('-j, --js', 'Use javascript for --create.')
+                        p = parts[i][0].toUpperCase()
 
-    .option('-O, --offline', 'Run offline.')
+                        camel += p + parts[i][1..]
 
-    .parse(process.argv)
+                    name = camel
 
+                if global[name]? 
 
-if program.register then return require('./actions/register').do program, false, ->
+                    return reject new Error "Plugin #{moduleName} collides with global.#{name}"
 
-if program.reset then return require('./actions/register').do program, true, ->
+                try
 
-program.template ||= 'default'
+                    global[name] = require moduleName
 
-if program.create then return require('./actions/create').do program, program.template, ->
+                catch e
 
-if program.createDev then return require('./actions/create').do program, 'dev', ->
+                    return reject e
 
-require('./actions/run').do program, ->
+                console.log "Loading plugin '#{moduleName}' as '#{name}'"
 
+                try
+
+                    global[name].init (e) -> 
+
+                        return reject e if e?
+
+                catch e
+
+                    return reject e
+
+                resolve()
+
+    ).then(
+
+        (result) -> process.nextTick ->
+
+            # remember all cached modules before running to allow flushing
+            # all but the starting modules at next run
+
+            required[filename] = {} for filename of require.cache
+
+            if program.recurse? 
+
+                unless typeof program.recurse is 'string'
+
+                    console.log "\nRecurse needs [dir]"
+                    return
+
+                dir = program.recurse
+
+                return objective.recurse dir, (err) ->
+
+                    return run err if err?
+
+                    run null
+
+            run null
+
+        (error) -> process.nextTick -> run error
+
+    )
+
+    run: (fn) -> run = fn
