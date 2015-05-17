@@ -1,13 +1,3 @@
-Object.defineProperty global, 'objective',
-
-    writable: false
-    
-    value: {}
-    
-program = require './cli'
-
-return if program.stop
-
 {deferred, pipeline} = require 'also'
 
 path = require 'path'
@@ -16,7 +6,15 @@ fs = require 'fs'
 
 required = {}
 
-module.exports = (config = {}) ->
+module.exports = Objective = (config = {}) ->
+
+    if typeof config == 'string'
+
+        title = config
+
+        config = arguments[1] || {}
+
+        config.title = title
 
     if objective.root?
 
@@ -28,7 +26,7 @@ module.exports = (config = {}) ->
 
             oldConfig = objective.root.children[config.uuid].root
 
-            console.log "Updating objective from '#{oldConfig.filename}'"
+            console.log "Updating '#{config.title}' from '#{oldConfig.filename}'"
 
             config.filename = oldConfig.filename
 
@@ -44,7 +42,7 @@ module.exports = (config = {}) ->
 
             config.filename = objective.loading
 
-            console.log "Loading objective from '#{config.filename}'"
+            console.log "Loading '#{config.title}' from '#{config.filename}'"
 
             objective.root.children[config.uuid] = root: config
 
@@ -62,11 +60,11 @@ module.exports = (config = {}) ->
 
                     delete require.cache[moduleFile]
 
-                console.log "Running objective from '#{config.filename}'"
+                console.log "Running '#{config.title}' from '#{config.filename}'"
                 
                 try
 
-                    fn()
+                    console.log RUN: fn()
 
                 catch e
 
@@ -103,82 +101,139 @@ module.exports = (config = {}) ->
     
     config.plugins ||= []
 
+    count = 1
+
     pipeline(
 
         for moduleName in config.plugins
 
-            do (moduleName) -> deferred ({resolve, reject}) ->
+            do (moduleName) -> 
 
-                name = moduleName.split(path.sep).pop().replace /^objective-/, ''
+                deferred ({resolve, reject}) ->
 
-                if name.match /[-\._]/
+                    unless typeof moduleName == 'string'
 
-                    parts = name.split /[-\._]/
+                        unless moduleName.name
 
-                    camel = parts[0]
+                            moduleName.name = "plugin#{count++}"
 
-                    for i in [1..parts.length - 1]
+                            console.log "Warning: Plugin without name. (set .name property)"
 
-                        p = parts[i][0].toUpperCase()
+                        if global[moduleName.name]? 
 
-                        camel += p + parts[i][1..]
+                            return reject new Error "Plugin #{moduleName} collides with global.#{moduleName.name}"
 
-                    name = camel
+                        console.log "Loading plugin '#{moduleName}' as '#{moduleName.name}'"
 
-                if global[name]? 
+                        global[moduleName.name] = moduleName
+                        
+                        try
 
-                    return reject new Error "Plugin #{moduleName} collides with global.#{name}"
+                            moduleName.init (e) ->
 
-                try
+                                return reject e if e?
 
-                    global[name] = require moduleName
+                                resolve()
 
-                catch e
+                        catch e
 
-                    return reject e
+                            return reject e
 
-                console.log "Loading plugin '#{moduleName}' as '#{name}'"
+                        return
 
-                try
+                    name = moduleName.split(path.sep).pop().replace /objective-/, ''
 
-                    global[name].init (e) -> 
+                    if name.match /[-\._]/
 
-                        return reject e if e?
+                        parts = name.split /[-\._]/
 
-                catch e
+                        camel = parts[0]
 
-                    return reject e
+                        for i in [1..parts.length - 1]
 
-                resolve()
+                            p = parts[i][0].toUpperCase()
+
+                            camel += p + parts[i][1..]
+
+                        name = camel
+
+                    if global[name]? 
+
+                        return reject new Error "Plugin #{moduleName} collides with global.#{name}"
+
+                    try
+
+                        if moduleName.match /^\./
+
+                            moduleName = path.normalize process.cwd() + path.sep + moduleName
+
+                        global[name] = require moduleName
+
+                    catch e
+
+                        return reject e
+
+                    console.log "Loading plugin '#{moduleName}' as '#{name}'"
+
+                    try
+
+                        global[name].init (e) ->
+
+                            return reject e if e?
+
+                            resolve()
+
+                    catch e
+
+                        return reject e
+
 
     ).then(
 
-        (result) -> process.nextTick ->
+        (result) ->
 
-            # remember all cached modules before running to allow flushing
-            # all but the starting modules at next run
+            process.nextTick ->
 
-            required[filename] = {} for filename of require.cache
+                # remember all cached modules before running to allow flushing
+                # all but the starting modules at next run
 
-            if program.recurse? 
+                required[filename] = {} for filename of require.cache
 
-                unless typeof program.recurse is 'string'
+                if program.recurse?
 
-                    console.log "\nRecurse needs [dir]"
-                    return
+                    unless typeof program.recurse is 'string'
 
-                dir = program.recurse
+                        console.log "\nRecurse needs [dir]"
+                        return
 
-                return objective.recurse dir, (err) ->
+                    dir = program.recurse
 
-                    return run err if err?
+                    return objective.recurse dir, (err) ->
 
-                    run null
+                        return run err if err?
 
-            run null
+                        run null
 
-        (error) -> process.nextTick -> run error
+                return objective.prompt() if program.prompt
+
+                run null
+
+        (error) ->
+
+            return console.log error.stack if program.prompt
+
+            process.nextTick -> run error
 
     )
 
     run: (fn) -> run = fn
+
+
+
+Object.defineProperty global, 'objective',
+
+    get: -> Objective
+
+    configurable: false
+
+program = require './cli'

@@ -2,7 +2,7 @@
 {pipeline, deferred} = require 'also'
 {normalize} = require 'path'
 mkpath = require 'mkpath'
-isBinaryFile = require 'isBinaryFile'
+try isBinaryFile = require 'isBinaryFile'  # wierd thing?
 fs = require 'fs'
 
 createEvent 'files.recurse.start'
@@ -148,8 +148,7 @@ recurse = (paths, options, callback) ->
 
                                             return reject err if err?
 
-                                            return resolve() if isBinaryFile file
-
+                                            try return resolve() if isBinaryFile file
 
                                             fs.watchFile file, interval: 100, (curr, prev) ->
 

@@ -90,10 +90,9 @@ module.exports = create =
             if program.js
 
                 content = """
-                require('objective')({
+                objective( 'Untitled', {
 
                     uuid: '#{uuid.v4()}',
-                    title: '',
                     description: '',
                     private: #{program.private},
                     plugins: []
@@ -103,15 +102,15 @@ module.exports = create =
                     if (e) return console.log(e);
 
                 });
+
                 """
 
             else
 
                 content = """
-                require('objective')
+                objective 'Untitled',
 
                     uuid: '#{uuid.v4()}'
-                    title: ''
                     description: ''
                     private: #{program.private}
                     plugins: []
@@ -119,6 +118,7 @@ module.exports = create =
                 .run (e) ->
 
                     return console.log e if e?
+
 
                 """
 

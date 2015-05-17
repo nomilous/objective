@@ -203,10 +203,9 @@ module.exports = register =
                                 4
 
                             fs.writeFileSync process.env.HOME + '/.objective/templates/default.coffee', """
-                            require('objective')
+                            objective 'Untitled',
 
                                 uuid: '__UUID__'
-                                title: ''
                                 description: ''
                                 private: __PRIVATE__
                                 plugins: []
@@ -218,10 +217,9 @@ module.exports = register =
                             """
 
                             fs.writeFileSync process.env.HOME + '/.objective/templates/dev.coffee', """
-                            require('objective')
+                            objective 'Untitled',
 
                                 uuid: '__UUID__'
-                                title: ''
                                 description: ''
                                 private: __PRIVATE__
                                 plugins: ['objective-dev']
@@ -245,10 +243,9 @@ module.exports = register =
                             """
 
                             fs.writeFileSync process.env.HOME + '/.objective/templates/default.js', """
-                            require('objective')({
+                            objective( 'Untitled', {
 
                                 uuid: '__UUID__',
-                                title: '',
                                 description: '',
                                 private: __PRIVATE__,
                                 plugins: []
@@ -261,10 +258,9 @@ module.exports = register =
                             """
 
                             fs.writeFileSync process.env.HOME + '/.objective/templates/dev.js', """
-                            require('objective')({
+                            objective( 'Untitled', {
 
                                 uuid: '__UUID__',
-                                title: '',
                                 description: '',
                                 private: __PRIVATE__,
                                 plugins: ['objective-dev']
@@ -290,7 +286,7 @@ module.exports = register =
                             """
 
                             fs.writeFileSync process.env.HOME + '/.objective/templates/dev/default_spec.js', """
-                            require('objective')({
+                            objective( '__TITLE__', {
 
                                 uuid: '__UUID__',
                                 title: '__TITLE__',
@@ -311,10 +307,9 @@ module.exports = register =
                             """
 
                             fs.writeFileSync process.env.HOME + '/.objective/templates/dev/default_spec.coffee', """
-                            require('objective')
+                            objective '__TITLE__',
 
                                 uuid: '__UUID__'
-                                title: '__TITLE__'
                                 description: ''
                                 private: __PRIVATE__
                                 plugins: ['objective-dev']

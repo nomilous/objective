@@ -1,4 +1,4 @@
-{objective} = global
+# {objective} = global
 
 {lstatSync, readFileSync} = require 'fs'
 
@@ -32,6 +32,8 @@ program
 
 .option('--run', 'Run child objectives. (from --recurse)')
 
+.option('--prompt', 'Proceed to prompt, skipping run')
+
 .option('--offline', 'Run offline.')
 
 .parse(process.argv)
@@ -63,15 +65,26 @@ if program.createDev
 
     return require('./actions/create').do program, 'dev', ->
 
-unless objective?
+
+unless objective.root?
 
     require('coffee-script').register()
 
     if program.file?
 
-        program.file = process.cwd() + '/' + program.file unless program.file[0] == '/'
+        console.log "Loading '#{program.file}'"
 
-        return require program.file
+        try
+
+            program.file = process.cwd() + '/' + program.file unless program.file[0] == '/'
+
+            require program.file
+
+            return
+
+        catch e
+
+            return console.log e.stack
 
     for file in ['./objective.coffee', './objective.js']
 
@@ -79,15 +92,19 @@ unless objective?
             
             lstatSync file
 
+            console.log "Loading '#{file}'"
+
             try
 
-                return require process.cwd() + '/' + file
+                require process.cwd() + '/' + file
+
+                return 
 
             catch e
 
-                return console.log e
- 
-    
+                return console.log e.stack
+
+
     console.log '\nNothing to do.'
     process.exit 1
 

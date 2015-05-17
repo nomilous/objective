@@ -1,6 +1,6 @@
 npm install objective -g
 
-#### Version 0.0.6
+#### Version 0.0.10
 
 Note: On windows there will be problems. Your fix will be greatly appreciated. (It gets a bit hairy in the prompt auto completion)
 

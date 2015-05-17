@@ -81,6 +81,22 @@ showHelp = (args, callback) ->
 
     callback()
 
+# log = console.log
+
+# timeouts = []
+
+# console.log = ->
+
+#     clearTimeout for timeout in timeouts
+
+#     log.apply null, arguments
+
+#     timeouts.push setTimeout (->
+
+#         writePrompt() unless running
+
+#     ), 100
+
 setPrompt = (newPrompt) ->
 
     prePrompt = newPrompt
@@ -317,6 +333,8 @@ autoComplete = ->
     if commands[cmd]? and args.length > 0
 
         # got command and some arguments so ask the plugin for autocomplete posibilities
+
+        commands[cmd].autoComplete ||= -> bell(); null
 
         try commands[cmd].autoComplete args, (err, possibles) ->
 
