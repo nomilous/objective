@@ -476,9 +476,11 @@ autoComplete = ->
                 # push the starting path onto the command
 
                 command = cmd + ' ' + res.startIn
-                process.stdout.clearLine()
-                process.stdout.cursorTo 0
-                writePrompt()
+
+            process.stdout.clearLine()
+            process.stdout.cursorTo 0
+            writePrompt()
+
     
 
 historyFile = process.env.HOME + '/.objective/command_history'
