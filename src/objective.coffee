@@ -4,6 +4,8 @@ path = require 'path'
 
 fs = require 'fs'
 
+uuid = require 'uuid'
+
 required = {}
 
 module.exports = Objective = (config = {}) ->
@@ -64,7 +66,25 @@ module.exports = Objective = (config = {}) ->
                 
                 try
 
-                    console.log RUN: fn()
+                    for name of objective.plugins
+
+                        try objective.plugins[name].before config
+
+                    running = fn()
+
+                    if running? and typeof running.then is 'function'
+
+                        running.then(
+
+                            (result) -> console.log result: result
+
+                            (error) -> console.log error: error
+
+                            (notify) -> console.log notify: notify
+
+                        )
+
+                        running.start() if typeof running.start is 'function'
 
                 catch e
 
@@ -100,6 +120,8 @@ module.exports = Objective = (config = {}) ->
     # plugins should be initialized asyncronously via plugin.init()
     
     config.plugins ||= []
+
+    objective.plugins ||= {}
 
     count = 1
 
@@ -180,6 +202,8 @@ module.exports = Objective = (config = {}) ->
                         global[name].init (e) ->
 
                             return reject e if e?
+
+                            objective.plugins[name] = global[name]
 
                             resolve()
 

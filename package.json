@@ -6,7 +6,7 @@
     "objective": "./bin/objective"
   },
   "dependencies": {
-    "also": "0.0.13",
+    "also": "0.0.14",
     "coffee-script": "^1.9.2",
     "commander": "^2.8.1",
     "decor": "0.0.2",
