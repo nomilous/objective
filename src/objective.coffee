@@ -1,4 +1,13 @@
-{deferred, pipeline} = require 'also'
+{deferred, pipeline, util} = require 'also'
+
+process.env.DEBUG = 'info,error,TODO' unless process.env.DEBUG?
+
+{info, debug, error, TODO} = require './logger'
+
+pipe = require './globals/pipeline'
+
+pipe.createEvent 'objective.result'
+pipe.createEvent 'objective.notify'
 
 path = require 'path'
 
@@ -28,7 +37,9 @@ module.exports = Objective = (config = {}) ->
 
             oldConfig = objective.root.children[config.uuid].root
 
-            console.log "Updating '#{config.title}' from '#{oldConfig.filename}'"
+            objective.prompt.startbg()
+
+            info "Updating '#{config.title}' from '#{oldConfig.filename}'"
 
             config.filename = oldConfig.filename
 
@@ -44,7 +55,7 @@ module.exports = Objective = (config = {}) ->
 
             config.filename = objective.loading
 
-            console.log "Loading '#{config.title}' from '#{config.filename}'"
+            info "Loading '#{config.title}' from '#{config.filename}'"
 
             objective.root.children[config.uuid] = root: config
 
@@ -62,7 +73,7 @@ module.exports = Objective = (config = {}) ->
 
                     delete require.cache[moduleFile]
 
-                console.log "Running '#{config.title}' from '#{config.filename}'"
+                info "Running '#{config.title}' from '#{config.filename}'"
                 
                 try
 
@@ -76,19 +87,40 @@ module.exports = Objective = (config = {}) ->
 
                         running.then(
 
-                            (result) -> console.log result: result
+                            (result) ->
 
-                            (error) -> console.log error: error
+                                debug result: result
 
-                            (notify) -> console.log notify: notify
+                                pipe.emit 'objective.result', error: null, result: result, ->
+                                    
+                                    objective.prompt.endbg()
+
+                            (error) -> 
+
+                                error error: error
+
+                                pipe.emit 'objective.result', error: error, result: null, ->
+                                    
+                                    objective.prompt.endbg()
+
+                            (message) ->
+
+                                debug notify: notify
+
+                                pipe.emit 'objective.notify', message: message,  ->
+                                
 
                         )
 
                         running.start() if typeof running.start is 'function'
 
+                    else
+
+                        objective.prompt.endbg()
+
                 catch e
 
-                    console.log e.stack + '\n'
+                    error e.stack + '\n'
 
 
     objective.root = config
@@ -102,7 +134,7 @@ module.exports = Objective = (config = {}) ->
 
         if objective[name]?
 
-            console.log "Warning: global #{name} no loaded."
+            info "Warning: global #{name} not loaded."
             return
 
         # console.log "Loading global '#{name}'"
@@ -139,13 +171,13 @@ module.exports = Objective = (config = {}) ->
 
                             moduleName.name = "plugin#{count++}"
 
-                            console.log "Warning: Plugin without name. (set .name property)"
+                            info "Warning: Plugin without name. (set .name property)"
 
                         if global[moduleName.name]? 
 
                             return reject new Error "Plugin #{moduleName} collides with global.#{moduleName.name}"
 
-                        console.log "Loading plugin '#{moduleName}' as '#{moduleName.name}'"
+                        info "Loading plugin '#{moduleName}' as '#{moduleName.name}'"
 
                         global[moduleName.name] = moduleName
                         
@@ -195,7 +227,7 @@ module.exports = Objective = (config = {}) ->
 
                         return reject e
 
-                    console.log "Loading plugin '#{moduleName}' as '#{name}'"
+                    info "Loading plugin '#{moduleName}' as '#{name}'"
 
                     try
 
@@ -216,6 +248,8 @@ module.exports = Objective = (config = {}) ->
 
         (result) ->
 
+            TODO 'promises after run to emit'
+
             process.nextTick ->
 
                 # remember all cached modules before running to allow flushing
@@ -227,7 +261,7 @@ module.exports = Objective = (config = {}) ->
 
                     unless typeof program.recurse is 'string'
 
-                        console.log "\nRecurse needs [dir]"
+                        info "\nRecurse needs [dir]"
                         return
 
                     dir = program.recurse
@@ -242,16 +276,69 @@ module.exports = Objective = (config = {}) ->
 
                 run null
 
-        (error) ->
+        (err) ->
 
-            return console.log error.stack if program.prompt
+            TODO 'promises after run to emit'
 
-            process.nextTick -> run error
+            return error err.stack if program.prompt
+
+            process.nextTick ->
+
+                # initialization error has ocurred, pass into the objective runner or display here
+                # per whether or not the runner has e in arg signature 
+
+                # pending injector
+
+                runArgs = util.argsOf run
+
+                i = 0
+
+                position = -1
+
+                for arg in runArgs
+
+                    if arg == 'e' or arg == 'er' or arg == 'err' or arg == 'error'
+
+                        position = i
+
+                    i++
+
+                if position >= 0
+
+                    argsToRun = []
+
+                    for i in [0..runArgs.length - 1]
+
+                        if i == position
+
+                            argsToRun.push err
+
+                        else
+                            argsToRun.push i
+
+                    return run.apply {}, argsToRun
+
+                error err.stack
+
+                run.apply {}
+
+
 
     )
 
-    run: (fn) -> run = fn
+    # for moduleName in config.plugins
 
+    #     if typeof moduleName == 'string'
+
+    #         try require(moduleName).registerArgs program
+
+    #     else
+
+    #         try moduleName.registerArgs program
+
+    # program.start()
+
+    run: (fn) -> run = fn
 
 
 Object.defineProperty global, 'objective',
@@ -261,3 +348,8 @@ Object.defineProperty global, 'objective',
     configurable: false
 
 program = require './cli'
+
+objective.logger = require './logger'
+
+program.start()
+

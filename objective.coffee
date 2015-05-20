@@ -32,9 +32,7 @@ objective 'Objective Name',
     # plugins: [plugin, 'objective-dev']
     plugins: ['objective-dev']
 
-.run (e) ->
-
-    return console.log e if e?
+.run ->
 
     {prompt, recurse, pipe} = objective
 
@@ -49,6 +47,33 @@ objective 'Objective Name',
     # #     next()
     # #
 
+    # pipe.on 'dev.test.before.all', ({tree}, next) ->
+
+    #     next()
+
+    # pipe.on 'dev.test.after.all', (stuff, next) ->
+
+    #     # console.log stuff
+
+    #     next()
+
+    # pipe.on 'dev.test.before.each', ({test}, next) ->
+
+    #     # console.log '-------------------'
+    #     # console.log test if test.type == 'test'
+    #     # console.log '-------------------'
+    #     next()
+
+    # pipe.on 'dev.test.after.each', ({test}, next) ->
+
+    #     # setTimeout next, 1000
+
+    #     if test.type != 'test'
+
+    #         console.log test
+
+    #     next()
+
     dev.testDir = 'spec'
     dev.sourceDir = 'src'
     dev.compileTo = 'lib'
@@ -56,5 +81,7 @@ objective 'Objective Name',
     recurse ['spec', 'src'], create: true, (e) ->
 
         console.log e if e?
+
+        dev.reporters.default()
     
         prompt()

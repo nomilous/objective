@@ -1,5 +1,7 @@
 fs = require 'fs'
 
+{error} = require './logger'
+
 module.exports = 
 
     load: ->
@@ -29,4 +31,4 @@ module.exports =
                 """
                 process.exit 1
 
-            console.log e.toString()
+            error e.toString()

@@ -5,66 +5,44 @@ objective 'ExampleModule',
     private: true
     plugins: ['objective-dev']
 
-.run (e) ->
+.run ->
 
-    return console.log e if e?
+    before -> 
 
+    afterEach -> 
 
-    before -> console.log 'outer before all'
+    beforeEach -> 
 
-    afterEach -> console.log '1 SHOULD SEE THIS THREE TIMES'
+    describe 'Outer describe 1', ->
 
-    beforeEach -> console.log '1 ALSO 3 times'
+    context 'Outer context 2', ->
 
-
-    # xdescribe 'Outer describe 1', ->
-
-    #     console.log 'Outer describe 1'
-
-
-
-
-    describe 'Outer context 2', ->
-
-        console.log 'Outer context 2'
-
-        afterEach -> console.log '2 SHOULD SEE THIS THREE TIMES'
+        afterEach -> 
 
         context 'Inner context 1', ->
 
-            console.log 'Inner context 1'
-
-            afterEach -> console.log '3 SHOULD SEE THIS THREE TIMES'
+            afterEach -> 
 
             it 'test 1', ->
-                console.log 'test 1'
-                # throw new Error 'In Test'
 
-            # it.only 'test 2', ->
-
-            #     console.log 'test 2'
+            it 'test 2', ->
 
             it 'test 3', ->
-                console.log 'test 3'
 
             it 'test 4', ->
-                console.log 'test 4'
 
+        context 'Inner context 2', ->
 
-        # context 'Inner context 2', ->
+    describe 'Outer describe 3', ->
 
-        #     console.log 'Inner context 2'
-
-
-    # xdescribe 'Outer describe 3', ->
-
-    #     console.log 'Outer describe 3'
-
-
-
-
-    # afterEach -> console.log 'outer after each'
+    afterEach -> 
     
+    after ->
 
-    after -> console.log 'outer after all'
+    afterAll ->
 
+    after
+
+        each: ->
+
+        all: ->

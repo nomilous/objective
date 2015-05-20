@@ -4,6 +4,8 @@
 
 module.exports = program = require 'commander'
 
+{info, error, debug} = require './logger'
+
 program.stop = false
 
 program
@@ -36,76 +38,77 @@ program
 
 .option('--offline', 'Run offline.')
 
-.parse(process.argv)
+module.exports.start = ->
+
+    program.parse(process.argv)
+
+    if program.register
+
+        program.stop = true
+
+        return require('./actions/register').do program, false, ->
+
+    if program.reset 
+
+        program.stop = true
+
+        return require('./actions/register').do program, true, ->
+
+    program.template ||= 'default'
+
+    if program.create
+
+        program.stop = true
+
+        return require('./actions/create').do program, program.template, ->
+
+    if program.createDev
+
+        program.stop = true
+
+        return require('./actions/create').do program, 'dev', ->
 
 
-if program.register
+    unless objective.root?
 
-    program.stop = true
+        require('coffee-script').register()
 
-    return require('./actions/register').do program, false, ->
+        if program.file?
 
-if program.reset 
-
-    program.stop = true
-
-    return require('./actions/register').do program, true, ->
-
-program.template ||= 'default'
-
-if program.create
-
-    program.stop = true
-
-    return require('./actions/create').do program, program.template, ->
-
-if program.createDev
-
-    program.stop = true
-
-    return require('./actions/create').do program, 'dev', ->
-
-
-unless objective.root?
-
-    require('coffee-script').register()
-
-    if program.file?
-
-        console.log "Loading '#{program.file}'"
-
-        try
-
-            program.file = process.cwd() + '/' + program.file unless program.file[0] == '/'
-
-            require program.file
-
-            return
-
-        catch e
-
-            return console.log e.stack
-
-    for file in ['./objective.coffee', './objective.js']
-
-        try
-            
-            lstatSync file
-
-            console.log "Loading '#{file}'"
+            info "Loading '#{program.file}'"
 
             try
 
-                require process.cwd() + '/' + file
+                program.file = process.cwd() + '/' + program.file unless program.file[0] == '/'
 
-                return 
+                require program.file
+
+                return
 
             catch e
 
-                return console.log e.stack
+                return error e.stack
+
+        for file in ['./objective.coffee', './objective.js']
+
+            try
+                
+                lstatSync file
+
+                info "Loading '#{file}'"
+
+                try
+
+                    require process.cwd() + '/' + file
+
+                    return 
+
+                catch e
+
+                    return error e.stack
 
 
-    console.log '\nNothing to do.'
-    process.exit 1
+        error '\nNothing to do.'
+        process.exit 1
 
 

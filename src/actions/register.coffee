@@ -210,9 +210,9 @@ module.exports = register =
                                 private: __PRIVATE__
                                 plugins: []
 
-                            .run (e) ->
+                            .run ->
 
-                                return console.log e if e?
+                                
 
                             """
 
@@ -224,9 +224,7 @@ module.exports = register =
                                 private: __PRIVATE__
                                 plugins: ['objective-dev']
 
-                            .run (e) ->
-
-                                return console.log e if e?
+                            .run ->
 
                                 {prompt, recurse} = objective
 
@@ -237,6 +235,8 @@ module.exports = register =
                                 recurse ['spec', 'src'], create: true, (e) -> 
 
                                     return console.log e if e?
+
+                                    dev.reporters.default()
 
                                     prompt()
 
@@ -250,9 +250,7 @@ module.exports = register =
                                 private: __PRIVATE__,
                                 plugins: []
 
-                            }).run(function(e){
-
-                                if (e) return console.log(e);
+                            }).run(function(){
 
                             });
                             """
@@ -265,9 +263,7 @@ module.exports = register =
                                 private: __PRIVATE__,
                                 plugins: ['objective-dev']
 
-                            }).run(function(e){
-
-                                if (e) return console.log(e);
+                            }).run(function(){
 
                                 dev.testDir = 'spec'
                                 dev.sourceDir = 'lib'
@@ -277,6 +273,8 @@ module.exports = register =
                                     //todo: watch lib to run spec on change
 
                                     if (e) return console.log(e);
+
+                                    dev.reporters.default();
 
                                     objective.prompt();
 
@@ -294,9 +292,7 @@ module.exports = register =
                                 private: __PRIVATE__,
                                 plugins: ['objective-dev']
 
-                            }).run(function(e){
-
-                                if (e) return console.log(e);
+                            }).run(function(){
 
                                 context('', function(){
 
@@ -314,9 +310,7 @@ module.exports = register =
                                 private: __PRIVATE__
                                 plugins: ['objective-dev']
 
-                            .run (e) ->
-
-                                return console.log e if e?
+                            .run ->
 
                                 context '', -> it ''
 

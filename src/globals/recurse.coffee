@@ -4,6 +4,7 @@
 mkpath = require 'mkpath'
 try isBinaryFile = require 'isBinaryFile'  # wierd thing?
 fs = require 'fs'
+{info, debug, error} = require '../logger'
 
 createEvent 'files.recurse.start'
 createEvent 'files.recurse.entering'
@@ -16,7 +17,7 @@ createEvent 'files.watch.reload?'
 
 module.exports = (paths, optionsORcallback, callback) ->
 
-    console.log "Recursing #{JSON.stringify paths}"
+    info "Recursing #{JSON.stringify paths}"
 
     options = optionsORcallback
 
@@ -166,8 +167,8 @@ recurse = (paths, options, callback) ->
 
                                                     catch e
 
-                                                        console.log "\nError loading '#{filename}'"
-                                                        console.log e.stack
+                                                        error "\nError loading '#{filename}'"
+                                                        error e.stack
 
 
                                             emit 'files.recurse.load?', file, (err) ->

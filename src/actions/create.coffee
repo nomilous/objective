@@ -97,9 +97,8 @@ module.exports = create =
                     private: #{program.private},
                     plugins: []
 
-                }).run(function(e){
+                }).run(function(){
 
-                    if (e) return console.log(e);
 
                 });
 
@@ -115,9 +114,7 @@ module.exports = create =
                     private: #{program.private}
                     plugins: []
 
-                .run (e) ->
-
-                    return console.log e if e?
+                .run ->
 
 
                 """

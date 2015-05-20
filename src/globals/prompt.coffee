@@ -20,7 +20,11 @@ offset = 0
 
 searching = false
 
-running = false
+running = false # prompt started a command
+
+prompting = false
+
+
 
 bell = ->  process.stdout.write '\u0007'
 
@@ -617,6 +621,10 @@ backspace = ->
 
 module.exports = (done) ->
 
+    objective.logger.info "Starting prompt"
+
+    prompting = true
+
     # create registrar and emit for listening modules to 
     # register their command line functions
 
@@ -733,3 +741,10 @@ module.exports = (done) ->
 
         writePrompt()
 
+module.exports.startbg = ->
+
+    console.log() if prompting
+
+module.exports.endbg = ->
+
+    writePrompt() if prompting
