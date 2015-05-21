@@ -21,8 +21,8 @@ Todo
 Special in Docs
 ---------------
 
-* files.recurse.load.fatal?
-* files.recurse.load?
+* files.recurse.load.fatal? (cancel)
+* files.recurse.load? (cancel, and other in recursor)
 * (error) into runner
 * promise returned by runner (notify), pipeline
 

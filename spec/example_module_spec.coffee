@@ -7,11 +7,11 @@ objective 'ExampleModule',
 
 .run ->
 
-    before -> 
+    before (done) -> setTimeout done, 1500
 
     afterEach -> 
 
-    beforeEach -> 
+    beforeEach -> # throw new Error 'Grumble'
 
     describe 'Outer describe 1', ->
 
@@ -24,6 +24,8 @@ objective 'ExampleModule',
             afterEach -> 
 
             it 'test 1', ->
+
+                # throw new Error 'Grumble'
 
             it 'test 2', ->
 

@@ -1,13 +1,22 @@
-{deferred, pipeline, util} = require 'also'
-
+# process.env.DEBUG = 'info,error' unless process.env.DEBUG?
 process.env.DEBUG = 'info,error,TODO' unless process.env.DEBUG?
+
+{deferred, pipeline, util, When} = require 'also'
 
 {info, debug, error, TODO} = require './logger'
 
-pipe = require './globals/pipeline'
+TODO 'exit codes, and after recurse for all test results'
 
+TODO 'add flag to not queue child objectives'
+
+TODO 'per module debug'
+
+pipe = require './globals/pipeline'
 pipe.createEvent 'objective.result'
 pipe.createEvent 'objective.notify'
+pipe.createEvent 'objective.queued'
+
+{enque} = require('./globals/queue').create 'objectives'
 
 path = require 'path'
 
@@ -17,7 +26,11 @@ uuid = require 'uuid'
 
 required = {}
 
+run = undefined # promise of a currently running child objective
+
 module.exports = Objective = (config = {}) ->
+
+    running = null  # the promise of the root objective
 
     if typeof config == 'string'
 
@@ -29,23 +42,15 @@ module.exports = Objective = (config = {}) ->
 
     if objective.root?
 
-        # loading child objective (from objective.recurse)
-
-        objective.root.children ||= {}
-
         if objective.root.children[config.uuid]?
 
             oldConfig = objective.root.children[config.uuid].root
 
             objective.prompt.startbg()
 
-            info "Updating '#{config.title}' from '#{oldConfig.filename}'"
+            debug "Updating '#{config.title}' from '#{oldConfig.filename}'"
 
             config.filename = oldConfig.filename
-
-            # reloading changed child objective
-
-            # # # console.log changed: config.uuid
 
             objective.root.children[config.uuid] = root: config
 
@@ -59,71 +64,85 @@ module.exports = Objective = (config = {}) ->
 
             objective.root.children[config.uuid] = root: config
 
+
+        # run, for child objectives
+
         return run: (fn) ->
 
-            # run, for child objectives
+            run = When.defer()
 
             objective.root.children[config.uuid].run = fn
 
-            if program.run or objective.root.children[config.uuid].doRun
+            return run.resolve() unless program.run or objective.root.children[config.uuid].doRun
 
-                for moduleFile of require.cache
+            TODO 'flag to disable require cache flushing'
 
-                    continue if required[moduleFile]
+            for moduleFile of require.cache
 
-                    delete require.cache[moduleFile]
+                continue if required[moduleFile]
 
-                info "Running '#{config.title}' from '#{config.filename}'"
-                
-                try
+                delete require.cache[moduleFile]
 
-                    for name of objective.plugins
+            info "Running '#{config.title}' from '#{config.filename}'"
+            
+            try
 
-                        try objective.plugins[name].before config
+                for name of objective.plugins
 
-                    running = fn()
+                    try objective.plugins[name].before config
 
-                    if running? and typeof running.then is 'function'
+                childRunning = fn()
 
-                        running.then(
+                if childRunning? and typeof childRunning.then is 'function'
 
-                            (result) ->
+                    childRunning.then(
 
-                                debug result: result
+                        (result) ->
 
-                                pipe.emit 'objective.result', error: null, result: result, ->
-                                    
-                                    objective.prompt.endbg()
+                            debug objective_result: result
 
-                            (error) -> 
-
-                                error error: error
-
-                                pipe.emit 'objective.result', error: error, result: null, ->
-                                    
-                                    objective.prompt.endbg()
-
-                            (message) ->
-
-                                debug notify: notify
-
-                                pipe.emit 'objective.notify', message: message,  ->
+                            pipe.emit 'objective.result', error: null, result: result, ->
                                 
+                                objective.prompt.endbg()
+                                run.resolve()
 
-                        )
+                        (err) -> 
 
-                        running.start() if typeof running.start is 'function'
+                            error objective_error: err
 
-                    else
+                            pipe.emit 'objective.result', error: err, result: null, ->
+                                
+                                objective.prompt.endbg()
+                                run.resolve()
 
-                        objective.prompt.endbg()
+                        (message) ->
 
-                catch e
+                            debug objective_notify: notify
 
-                    error e.stack + '\n'
+                            pipe.emit 'objective.notify', message: message,  ->
+
+                                run.resolve()
+                            
+                    )
+
+                    childRunning.start() if typeof childRunning.start is 'function'
+
+                else
+
+                    objective.prompt.endbg()
+                    run.resolve()
+                    # done()
+
+            catch e
+
+                error e.stack + '\n'
+                run.resolve()
+                # done()
 
 
     objective.root = config
+
+    objective.root.children ||= {}
 
     run = (e) ->
 
@@ -137,9 +156,11 @@ module.exports = Objective = (config = {}) ->
             info "Warning: global #{name} not loaded."
             return
 
-        # console.log "Loading global '#{name}'"
+        info "Loading global 'objective.#{name}'"
         objective[name] = require path
         objective.coffee.register() if name == 'coffee'
+        objective.globals ||= []
+        objective.globals.push name
 
 
     loadGlobal 'recurse', './globals/recurse'
@@ -147,6 +168,8 @@ module.exports = Objective = (config = {}) ->
     loadGlobal 'uplink', './globals/uplink'
     loadGlobal 'prompt', './globals/prompt'
     loadGlobal 'pipe', './globals/pipeline'
+    loadGlobal 'injector', './globals/injector'
+    loadGlobal 'queue', './globals/queue'
 
 
     # plugins should be initialized asyncronously via plugin.init()
@@ -185,11 +208,15 @@ module.exports = Objective = (config = {}) ->
 
                             moduleName.init (e) ->
 
+                                error "Failed loading plugin '#{moduleName.name}'" if e?
+
                                 return reject e if e?
 
                                 resolve()
 
                         catch e
+
+                            error "Failed loading plugin '#{moduleName.name}'"
 
                             return reject e
 
@@ -233,6 +260,8 @@ module.exports = Objective = (config = {}) ->
 
                         global[name].init (e) ->
 
+                            error "Failed loading plugin '#{name}'" if e?
+
                             return reject e if e?
 
                             objective.plugins[name] = global[name]
@@ -240,6 +269,8 @@ module.exports = Objective = (config = {}) ->
                             resolve()
 
                     catch e
+
+                        error "Failed loading plugin '#{name}'"
 
                         return reject e
 
@@ -256,6 +287,9 @@ module.exports = Objective = (config = {}) ->
                 # all but the starting modules at next run
 
                 required[filename] = {} for filename of require.cache
+
+                TODO 'Handle recursing, get root promise (running) first (or something)'
+                TODO 'Or remove --recurse (similar needed for test all silently'
 
                 if program.recurse?
 
@@ -274,54 +308,22 @@ module.exports = Objective = (config = {}) ->
 
                 return objective.prompt() if program.prompt
 
-                run null
+                running = objective.injector {}, run
 
         (err) ->
 
-            TODO 'promises after run to emit'
+            if program.prompt
 
-            return error err.stack if program.prompt
+                error err.stack
+                program.exit 1
 
             process.nextTick ->
 
-                # initialization error has ocurred, pass into the objective runner or display here
-                # per whether or not the runner has e in arg signature 
+                # injector injects error into run if run accepts it (per arguments)
 
-                # pending injector
-
-                runArgs = util.argsOf run
-
-                i = 0
-
-                position = -1
-
-                for arg in runArgs
-
-                    if arg == 'e' or arg == 'er' or arg == 'err' or arg == 'error'
-
-                        position = i
-
-                    i++
-
-                if position >= 0
-
-                    argsToRun = []
-
-                    for i in [0..runArgs.length - 1]
-
-                        if i == position
-
-                            argsToRun.push err
-
-                        else
-                            argsToRun.push i
-
-                    return run.apply {}, argsToRun
-
-                error err.stack
-
-                run.apply {}
-
+                running = objective.injector error: err, run
+                
+                process.exit 1 unless running? and typeof running.then is 'function'
 
 
     )
@@ -341,9 +343,18 @@ module.exports = Objective = (config = {}) ->
     run: (fn) -> run = fn
 
 
+module.exports.promise = -> return master.promise
+
+
 Object.defineProperty global, 'objective',
 
     get: -> Objective
+
+    configurable: false
+
+Object.defineProperty objective, 'runningChild',
+
+    get: -> run.promise || false
 
     configurable: false
 

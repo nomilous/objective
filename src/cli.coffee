@@ -32,7 +32,7 @@ program
 
 .option('--recurse [dir]', 'Recurse directory for child objectives.')
 
-.option('--run', 'Run child objectives. (from --recurse)')
+# .option('--run', 'Run child objectives. (from --recurse)')
 
 .option('--prompt', 'Proceed to prompt, skipping run')
 

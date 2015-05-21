@@ -32,9 +32,8 @@ objective 'Objective Name',
     # plugins: [plugin, 'objective-dev']
     plugins: ['objective-dev']
 
-.run ->
+.run (prompt, recurse, pipe) ->
 
-    {prompt, recurse, pipe} = objective
 
     # # pipe.on 'files.recurse.load?', (file, next) ->
     # #     next()
@@ -78,7 +77,7 @@ objective 'Objective Name',
     dev.sourceDir = 'src'
     dev.compileTo = 'lib'
 
-    recurse ['spec', 'src'], create: true, (e) ->
+    recurse ['spec', 'src'], createDir: true, (e) ->
 
         console.log e if e?
 

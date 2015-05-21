@@ -1,6 +1,6 @@
 {createEvent, emit} = require './pipeline'
 {pipeline, deferred} = require 'also'
-{normalize} = require 'path'
+{normalize, sep} = require 'path'
 mkpath = require 'mkpath'
 try isBinaryFile = require 'isBinaryFile'  # wierd thing?
 fs = require 'fs'
@@ -92,7 +92,7 @@ recurse = (paths, options, callback) ->
 
                     return reject e unless e.errno == 34
 
-                    return reject e unless options.create
+                    return reject e unless options.createDir
 
                     try
 
@@ -117,7 +117,7 @@ recurse = (paths, options, callback) ->
 
                         for f in contents
 
-                            f = path + '/' + f
+                            f = path + sep + f
 
                             try
 
@@ -141,6 +141,8 @@ recurse = (paths, options, callback) ->
 
                                 do (file) -> deferred ({resolve, reject}) ->
 
+                                    debug "recursor found file #{file}"
+
                                     emit 'files.recurse.found',
 
                                         path: file
@@ -155,13 +157,38 @@ recurse = (paths, options, callback) ->
 
                                                 return unless prev.mtime < curr.mtime
 
-                                                emit 'files.watch.reload?', file, (err) ->
+                                                emit 'files.watch.reload?', file, ->
 
-                                                    return if err?
+                                                    debug "recursor reloading file #{file}"
 
+                                                    {children} = objective.root
+
+                                                    {enque} = require('./queue').get 'objectives'
+
+                                                    for uuid of children
+
+                                                        objectiveFile = children[uuid].root.filename
+
+                                                        if file == objectiveFile
+
+                                                            debug "recursor queueing objective from file '#{file}'"
+
+                                                            return enque( (done, file) ->
+
+                                                                debug "recursor running objective from file '#{file}'"
+
+                                                                filename = process.cwd() + sep + file
+                                                                delete require.cache[filename]
+                                                                require filename
+                                                                objective.runningChild.then ->
+
+                                                                    debug "recursor done objective from file '#{file}'"
+                                                                    done()
+
+                                                            )(file)
                                                     try
 
-                                                        filename = process.cwd() + '/' + file
+                                                        filename = process.cwd() + sep + file
                                                         delete require.cache[filename]
                                                         require filename
 
@@ -171,15 +198,15 @@ recurse = (paths, options, callback) ->
                                                         error e.stack
 
 
-                                            emit 'files.recurse.load?', file, (err) ->
+                                            emit 'files.recurse.load?', file, ->
 
-                                                return resolve() if err?
+                                                debug "recursor loading file #{file}"
 
                                                 objective.loading = file
 
                                                 try
                                                     
-                                                    require process.cwd() + '/' + file
+                                                    require process.cwd() + sep + file
 
                                                     resolve()
 
@@ -196,10 +223,9 @@ recurse = (paths, options, callback) ->
                                                             resolve()
                                                 
 
-
                         ).then(
 
-                            (result) -> 
+                            (result) ->
 
                                 recurse directories, options, (err, res) ->
 
@@ -219,6 +245,3 @@ recurse = (paths, options, callback) ->
         (notify) ->
 
     )
-
-
-

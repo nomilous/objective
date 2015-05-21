@@ -747,4 +747,4 @@ module.exports.startbg = ->
 
 module.exports.endbg = ->
 
-    writePrompt() if prompting
+    writePrompt true if prompting

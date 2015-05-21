@@ -2,7 +2,11 @@
 
 # middleware style event pipeline
 
-{debug} = require '../logger'
+{error, debug, TODO, info} = require '../logger'
+
+TODO 'report on hung pipes at program exit'
+
+TODO 'queued pipeline'
 
 module.exports = Pipeline =
 
@@ -24,6 +28,10 @@ module.exports = Pipeline =
 
         # TODO: fix left promises hanging when middleware doesnt call next
 
+        cancelled = false
+
+        cancelledReason = 'reason unspecified'
+
         pipeline(
         
             for fn in pipe
@@ -32,7 +40,23 @@ module.exports = Pipeline =
 
                     debug "pipeline event handler running event '#{event}'"
 
-                    fn payload, action.resolve
+                    #fn payload, action.resolve
+
+                    objective.injector
+
+                        args: [payload]
+
+                        next: action.resolve
+
+                        onError: action.reject
+
+                        cancel: (reason) ->
+
+                            cancelledReason = reason if reason?
+                            cancelled = true
+                            action.reject()
+
+                        fn
 
         ).then(
 
@@ -42,11 +66,19 @@ module.exports = Pipeline =
 
                 callback null, payload
 
-            (error) ->
-                
-                debug "pipeline event '#{event}' failed #{error.toString()}"
+            (err) ->
 
-                callback error
+                if cancelled
+
+                    # no callback on cancelled
+
+                    info "pipeline event '#{event}' cancelled because '#{cancelledReason}'"
+
+                    return
+                
+                error "pipeline event '#{event}' failed #{err.toString()}"
+
+                callback err
 
             (notify) ->
 
