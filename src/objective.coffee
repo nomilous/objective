@@ -156,7 +156,7 @@ module.exports = Objective = (config = {}) ->
             info "Warning: global #{name} not loaded."
             return
 
-        info "Loading global 'objective.#{name}'"
+        debug "Loading global 'objective.#{name}'"
         objective[name] = require path
         objective.coffee.register() if name == 'coffee'
         objective.globals ||= []

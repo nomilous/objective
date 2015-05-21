@@ -7,7 +7,7 @@ objective 'ExampleModule',
 
 .run ->
 
-    before (done) -> setTimeout done, 1500
+    before -> # (done) -> setTimeout done, 1500
 
     afterEach -> 
 
@@ -17,23 +17,65 @@ objective 'ExampleModule',
 
     context 'Outer context 2', ->
 
-        afterEach -> 
+        beforeEach -> # throw new Error 'F'
 
-        context 'Inner context 1', ->
+        context 'Inner context 1', (ExampleModule, Test) ->
 
-            afterEach -> 
+            beforeEach ->
 
-            it 'test 1', ->
+            it 'test 1', (done) ->
+
+                ExampleModule.does
+
+                    $$something: (one, two) ->
+
+                        # console.log FIRST: "#{one} #{two}"
+
+                ExampleModule.does
+
+                    $$something: (one, two) ->
+
+                        # console.log SECOND: "#{one} #{two}"
+
+                Test.does
+
+                    anotherThing: ->
+
+                @timeout 100
+
+                #ExampleModule.something 'arg1', 'arg2'
+
+                ExampleModule.something 'arg3', 'arg4'
+
+                Test.does
+
+                    anotherThing: -> 
+
+                        done()
+
+                Test.anotherThing()
+
+                Test.anotherThing()
+
 
                 # throw new Error 'Grumble'
 
             it 'test 2', ->
 
+
             it 'test 3', ->
 
-            it 'test 4', ->
+            it 'test 4', (should) ->
+
+                #1.should.equal 2
 
         context 'Inner context 2', ->
+
+            it 'test 5', (assert) ->
+
+                # console.log aa: assert
+
+                # assert.deepEqual [], [2]
 
     describe 'Outer describe 3', ->
 

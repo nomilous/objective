@@ -1,3 +1,5 @@
-module.exports = ExampleModule = 
+module.exports = ExampleModule = # class ExampleModule
 
-    fn: ->
+    something: (a, b) ->
+
+        # console.log 'ORIGINAL': "#{a}": "#{b}"    
