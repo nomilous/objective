@@ -23,8 +23,8 @@ module.exports = create =
             program.private = false
 
         file = program.file || 'objective'
-        if program.js then file = "#{file}.js" unless file.match /.js$/
-        else file = "#{file}.coffee" unless file.match /.coffee$/
+        if program.js then file = "#{file}.js" unless file.match /\.js$/
+        else file = "#{file}.coffee" unless file.match /\.coffee$/
 
 
         try

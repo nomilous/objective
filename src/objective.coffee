@@ -6,10 +6,9 @@ process.env.DEBUG = 'info,error,TODO' unless process.env.DEBUG?
 {info, debug, error, TODO} = require './logger'
 
 TODO 'exit codes, and after recurse for all test results'
-
 TODO 'add flag to not queue child objectives'
-
 TODO 'per module debug'
+TODO 'config into json appendage'
 
 pipe = require './globals/pipeline'
 pipe.createEvent 'objective.result'
