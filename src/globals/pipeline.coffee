@@ -75,6 +75,8 @@ module.exports = Pipeline =
                     info "pipeline event '#{event}' cancelled because '#{cancelledReason}'"
 
                     return
+
+                console.log err.stack
                 
                 error "pipeline event '#{event}' failed #{err.toString()}"
 

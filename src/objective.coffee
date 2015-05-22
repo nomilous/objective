@@ -162,6 +162,7 @@ module.exports = Objective = (config = {}) ->
         objective.globals ||= []
         objective.globals.push name
 
+    TODO 'repeat() global'
 
     loadGlobal 'recurse', './globals/recurse'
     loadGlobal 'coffee', 'coffee-script'

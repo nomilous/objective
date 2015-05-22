@@ -7,15 +7,53 @@ objective 'ExampleModule',
 
 .run ->
 
-    before -> # (done) -> setTimeout done, 1500
+    before ->
 
-    afterEach -> 
+       # mock('obj').does
 
-    beforeEach -> # throw new Error 'Grumble'
+        #     function: ->
+
+        # (done) -> setTimeout done, 1500
+
+    afterEach ->
+
+    beforeEach ->
+
+        # mock('thing').does
+
+        # mock('obj').does
+
+    beforeEach -> 
+
+        # mock('thing').does
+
+        #     function2: ->
+
+        # throw new Error 'Grumble'
 
     describe 'Outer describe 1', ->
 
-    context 'Outer context 2', ->
+        it 'with mocked obj', ->
+
+            # mock('obj').does
+
+            # mock('thing').does
+
+            #obj.function()
+
+        it 'again', ->
+
+            #mock('thing').does
+
+        context 'deeper', ->
+
+            before ->
+
+                # mock('thing').does
+
+
+
+    xcontext 'Outer context 2', ->
 
         beforeEach -> # throw new Error 'F'
 
@@ -43,9 +81,13 @@ objective 'ExampleModule',
 
                 @timeout 100
 
-                #ExampleModule.something 'arg1', 'arg2'
+                ExampleModule.something 'arg1', 'arg2'
 
-                ExampleModule.something 'arg3', 'arg4'
+                console.log E: ExampleModule.prototype.constructor.name
+
+                console.log T: Test.constructor
+
+                # ExampleModule.something 'arg3', 'arg4'
 
                 Test.does
 
@@ -53,7 +95,7 @@ objective 'ExampleModule',
 
                         done()
 
-                Test.anotherThing()
+                # Test.anotherThing()
 
                 Test.anotherThing()
 

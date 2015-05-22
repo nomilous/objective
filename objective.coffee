@@ -76,6 +76,7 @@ objective 'Objective Name',
     dev.testDir = 'spec'
     dev.sourceDir = 'src'
     dev.compileTo = 'lib'
+    dev.expectorName = 'does'
 
     recurse ['spec', 'src'], createDir: true, (e) ->
 

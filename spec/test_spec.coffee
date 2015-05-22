@@ -5,8 +5,28 @@ objective 'Test',
     private: true
     plugins: ['objective-dev']
 
-.run (e) ->
+.run ->
 
-    return console.log e if e?
+    before -> console.log 'BEFORE'
 
-    context '', -> it ''
+    beforeEach -> console.log 'BEFORE EACH'
+
+    describe 'DESCRIBE', ->
+
+        before -> console.log 'before inner'
+
+        beforeEach -> console.log 'before each inner'
+
+        context 'CONTEXT', ->
+
+            it 'ONE', ->
+
+            it 'TWO', ->
+
+        afterEach -> console.log 'after each inner'
+
+        after -> console.log 'after inner'
+
+    afterEach -> console.log 'AFTER EACH'
+
+    after -> console.log 'AFTER'
