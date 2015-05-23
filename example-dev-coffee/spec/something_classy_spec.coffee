@@ -17,13 +17,13 @@ objective 'SomethingClassy',
 
 .run ->
 
-    console.log 'running!'
 
 
     before -> # doing nothing in root before and after hooks
 
-
     after ->  # if present, these will run, even if no it(s)
+
+
 
 
               #
@@ -63,6 +63,7 @@ objective 'SomethingClassy',
 
 
       # it 'eats', (....
+
         he 'eats', (done, lloyd) ->
 
                             #
@@ -80,7 +81,7 @@ objective 'SomethingClassy',
 
                 # bunch: ->
 
-            )               # .........  brackets
+            )               # .........  brackets...
 
             # having just replaced lloyd's eat method with an
             # expectation that he will eat before the test is
@@ -119,7 +120,7 @@ objective 'SomethingClassy',
         he 'works very hard', (lloyd, should) ->
 
 
-            lloyd.does(         # .........  aren't
+            lloyd.does(         # .........  aren't...
 
                 work: (hard) -> 
 
@@ -146,7 +147,7 @@ objective 'SomethingClassy',
             # 
             # 1. because relax was called
             # 2. and
-            # 3. that means 'he' is not working very hard
+            # 3. that means lloyd is not working very hard
             #
 
             #
@@ -183,7 +184,63 @@ objective 'SomethingClassy',
 
     context 'during the night', ->
 
+        it 'lets us spy on lloyd sleeping',
+        
+            (lloyd, should, done) ->
 
-        it 'lets us spy on lloyd sleeping', -> ''
+
+                process.nextTick -> 
+
+                    lloyd.sleep 'tight'
+
+                    .should.equal 'Goodnight Lloyd Blankfein, sleep tight...'
+
+                    done()
+
+                    # 
+                    # done works.
+                    # 
+                    #      (even, when, injected) -> 'as 3rd arg'
+                    # 
+                
+
+
+                lloyd.does
+
+                    $$sleep: (arg) ->
+
+                        #
+                        #  '$$' means spy...
+                        #
+                        #            on function 'sleep()'
+                        # 
+                        #       ie.  1. receive sleep's arguments
+                        #            2. have the option to throw
+                        #            3. original runs after spy
+                        #            3. test will still fail if
+                        #     encroach. encroach
+                        #            4. sleep() was not called
+                        # 
+
+                        arg.should.equal 'tight'
+
+                            #
+                            # this test will not fail
+                            # -----------------------
+                            # 
+                            # 1. because 'tight' is 'tight'
+                            # 
+
+
+                
+
+    
+
+    # context.only 'this one', -> # not yet...
+
+
+
+
+
 
         

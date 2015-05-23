@@ -17,7 +17,7 @@ module.exports = class SomethingClassy
 
     sit: -> '-h--'
 
-    sleep: -> "goodnight #{@name}"
+    sleep: (arg) -> "Goodnight #{@name}, sleep #{arg}..."
 
 
     # class methods

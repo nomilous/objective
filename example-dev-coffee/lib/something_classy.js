@@ -20,8 +20,8 @@ module.exports = SomethingClassy = (function() {
     return '-h--';
   };
 
-  SomethingClassy.prototype.sleep = function() {
-    return "goodnight " + this.name;
+  SomethingClassy.prototype.sleep = function(arg) {
+    return "Goodnight " + this.name + ", sleep " + arg + "...";
   };
 
   SomethingClassy.rushHour = function() {};
