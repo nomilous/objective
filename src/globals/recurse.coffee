@@ -179,11 +179,18 @@ recurse = (paths, options, callback) ->
 
                                                                 filename = process.cwd() + sep + file
                                                                 delete require.cache[filename]
-                                                                require filename
-                                                                objective.runningChild.then ->
 
-                                                                    debug "recursor done objective from file '#{file}'"
+                                                                try
+                                                                    require filename
+                                                                    objective.runningChild.then ->
+
+                                                                        debug "recursor done objective from file '#{file}'"
+                                                                        done()
+
+                                                                catch e
+                                                                    console.log e
                                                                     done()
+
 
                                                             )(file)
                                                     try

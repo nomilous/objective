@@ -9,7 +9,7 @@ module.exports = SomethingClassy = (function() {
       return function() {
         return _this.eat();
       };
-    })(this)), 500);
+    })(this)), 50);
   }
 
   SomethingClassy.prototype.eat = function() {};

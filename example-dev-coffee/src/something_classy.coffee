@@ -6,7 +6,7 @@ module.exports = class SomethingClassy
 
         @flashyCar = 'wife got a poodle?'
 
-        @eatInterval = setInterval (=>@eat()), 500
+        @eatInterval = setInterval (=>@eat()), 50
 
 
     # instance methods

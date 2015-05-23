@@ -105,7 +105,9 @@ module.exports = Objective = (config = {}) ->
                                 objective.prompt.endbg()
                                 run.resolve()
 
-                        (err) -> 
+                        (err) ->
+
+                            console.log err.stack
 
                             error objective_error: err
 
