@@ -7,15 +7,19 @@ objective 'Untitled',
 
 .run (recurse, prompt) ->
 
+    {dev} = objective.plugins
+
     dev.testDir = 'spec'
     dev.sourceDir = 'src'
     dev.compileTo = 'lib'
-    dev.expectorName = 'does'
 
     recurse ['spec', 'src'], createDir: true, (e) ->
 
-        console.log e if e?
+    #     console.log e if e?
 
-        dev.reporters.default()
+    #     dev.reporters.default.enable()
+
+        # dev.stacks()
     
         prompt()
+

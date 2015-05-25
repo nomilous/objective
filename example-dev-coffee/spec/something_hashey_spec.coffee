@@ -1,8 +1,27 @@
-objective 'SomethingHashey',
+objective ->
 
-    uuid: 'c9ee87c9-539e-4e8c-af67-975a7f52fe6c'
-    description: ''
-    private: false
-    plugins: ['objective-dev']
+    #
+    # Objective can be passed as an anonymous funtion
+    # without config or title.
+    # 
+    #         Silly not to title it tho...
+    # 
+    #   eg.
+    #         objective 'Make Fluffy Cloud Float Slowly North', ->
+    #        
+    # 
+    #
+    # Injection also works at the root, but only for
+    # node modules and [objective globals].
+    # 
+    # And it does not attach the mocker (.does())
+    #
+    #   eg.
+    #         objective (cloud) ->
+    #         
+    #              # do some stuff with cloud
+    #
 
-.run ->
+
+    it 'pending', ->
+

@@ -21,7 +21,7 @@ objective 'SomethingClassy',
 
     before -> # doing nothing in root before and after hooks
 
-    after ->  # if present, these will run, even if no it(s)
+    after ->
 
 
 
@@ -34,7 +34,6 @@ objective 'SomethingClassy',
               #                                         deLimiter
 
     beforeEach (SomethingClassy) ->
-
 
         # create a mockable instance of Lloyd Blankfein
         #                                (some banker)
@@ -114,7 +113,7 @@ objective 'SomethingClassy',
             # 
             # Because lloyd eats twenty times a second
             #                        (see constructor)
-
+            # 
 
 
         he 'works very hard', (lloyd, should) ->
@@ -188,23 +187,6 @@ objective 'SomethingClassy',
         
             (lloyd, should, done) ->
 
-
-                process.nextTick -> 
-
-                    lloyd.sleep 'tight'
-
-                    .should.equal 'Goodnight Lloyd Blankfein, sleep tight...'
-
-                    done()
-
-                    # 
-                    # done works.
-                    # 
-                    #      (even, when, injected) -> 'as 3rd arg'
-                    # 
-                
-
-
                 lloyd.does
 
                     $$sleep: (arg) ->
@@ -214,12 +196,12 @@ objective 'SomethingClassy',
                         #
                         #            on function 'sleep()'
                         # 
-                        #       ie.  1. receive sleep's arguments
-                        #            2. have the option to throw
-                        #            3. original runs after spy
-                        #            3. test will still fail if
+                        #       ie.  1. receive sleep's arguments for testing
+                        #            2. original runs after spy
+                        #               2.1. no feature to stop it (yet?)
+                        #            3. test foes not fail if spy was never called
                         #     encroach. encroach
-                        #            4. sleep() was not called
+                        #            4. spy can be called any number of times
                         # 
 
                         arg.should.equal 'tight'
@@ -232,9 +214,18 @@ objective 'SomethingClassy',
                             # 
 
 
-                
 
-    
+                lloyd.sleep 'tight'
+
+                .should.equal 'Goodnight Lloyd Blankfein, sleep tight...'
+
+                done()
+
+
+
+    afterEach (lloyd) -> clearTimeout lloyd.eatInterval
+
+
 
     # context.only 'this one', -> # not yet...
 
