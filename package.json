@@ -19,7 +19,8 @@
     "prompt": "^0.2.14",
     "request": "^2.55.0",
     "socket.io-client": "^1.3.5",
-    "uuid": "^2.0.1"
+    "uuid": "^2.0.1",
+    "when": "^3.7.3"
   },
   "devDependencies": {
     "ipso": "0.0.22"

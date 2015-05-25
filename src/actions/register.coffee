@@ -181,6 +181,8 @@ module.exports = register =
 
                             {key, uuid} = JSON.parse body
 
+                            # TODO 'win32 support'
+
                             dir = process.env.HOME + '/.objective'
 
                             mkpath.sync dir

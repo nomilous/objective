@@ -11,9 +11,9 @@ createEvent 'files.recurse.entering'
 createEvent 'files.recurse.found'
 createEvent 'files.recurse.end'
 createEvent 'files.recurse.error'
-createEvent 'files.recurse.load?'
-createEvent 'files.recurse.load.fatal?'
-createEvent 'files.watch.reload?'
+# createEvent 'files.recurse.load?'
+# createEvent 'files.recurse.load.fatal?'
+# createEvent 'files.watch.reload?'
 
 module.exports = (paths, optionsORcallback, callback) ->
 
@@ -147,87 +147,38 @@ recurse = (paths, options, callback) ->
 
                                         path: file
 
-                                        (err) ->
+                                        watch: false
+
+                                        load: false
+
+                                        (err, {watch, load}) ->
 
                                             return reject err if err?
 
                                             try return resolve() if isBinaryFile file
 
-                                            fs.watchFile file, interval: 100, (curr, prev) ->
+                                            if watch
 
-                                                return unless prev.mtime < curr.mtime
+                                                fs.watchFile file, interval: 100, (curr, prev) ->
 
-                                                emit 'files.watch.reload?', file, ->
+                                                    return unless prev.mtime < curr.mtime
 
-                                                    debug "recursor reloading file #{file}"
-
-                                                    {children} = objective.root
-
-                                                    {enque} = require('./queue').get 'objectives'
-
-                                                    for uuid of children
-
-                                                        objectiveFile = children[uuid].root.filename
-
-                                                        if file == objectiveFile
-
-                                                            debug "recursor queueing objective from file '#{file}'"
-
-                                                            return enque( (done, file) ->
-
-                                                                debug "recursor running objective from file '#{file}'"
-
-                                                                filename = process.cwd() + sep + file
-                                                                delete require.cache[filename]
-
-                                                                try
-                                                                    require filename
-                                                                    objective.runningChild.then ->
-
-                                                                        debug "recursor done objective from file '#{file}'"
-                                                                        done()
-
-                                                                catch e
-                                                                    console.log e
-                                                                    done()
+                                                    emit 'files.recurse.changed', path: file, ->
 
 
-                                                            )(file)
-                                                    try
-
-                                                        filename = process.cwd() + sep + file
-                                                        delete require.cache[filename]
-                                                        require filename
-
-                                                    catch e
-
-                                                        error "\nError loading '#{filename}'"
-                                                        error e.stack
-
-
-                                            emit 'files.recurse.load?', file, ->
-
-                                                debug "recursor loading file #{file}"
-
-                                                objective.loading = file
+                                            if load
 
                                                 try
-                                                    
+
                                                     require process.cwd() + sep + file
 
-                                                    resolve()
+                                                    return resolve()
 
                                                 catch e
-                                                    
-                                                    return emit 'files.recurse.load.fatal?',
 
-                                                        file: file
-                                                        error: e
+                                                    return reject e
 
-                                                        (err) ->
-
-                                                            return reject err if err?
-                                                            resolve()
+                                            resolve()
                                                 
 
                         ).then(

@@ -73,6 +73,8 @@ objective 'Objective Name',
 
     #     next()
 
+    {dev} = objective.plugins
+
     dev.testDir = 'spec'
     dev.sourceDir = 'src'
     dev.compileTo = 'lib'
@@ -82,6 +84,6 @@ objective 'Objective Name',
 
         console.log e if e?
 
-        dev.reporters.default()
+        dev.reporters.default.enable()
     
         prompt()

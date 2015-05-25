@@ -24,6 +24,7 @@ running = false # prompt started a command
 
 prompting = false
 
+handleKeyStrokes = null
 
 
 bell = ->  process.stdout.write '\u0007'
@@ -162,6 +163,8 @@ runCommand = ->
                     console.log res if res?
                 writePrompt true
 
+                handleKeyStrokes = null
+
             callback.write = (text) ->
 
                 process.stdout.clearLine()
@@ -173,6 +176,8 @@ runCommand = ->
                 console.log text
 
             commands[cmd].run args, callback
+
+            handleKeyStrokes = commands[cmd].keyStrokes
 
             return
 
@@ -470,6 +475,7 @@ autoComplete = ->
                 process.stdout.cursorTo 0
                 console.log line
                 console.log()
+                writePrompt()
 
 
         commands[cmd].autoComplete [''], (err, res) ->
@@ -660,7 +666,13 @@ module.exports = (done) ->
 
         process.stdin.on 'keypress', (ch, key) ->
 
-            return if running # a command is running, TODO: ^c (to stop somehow)
+            if running
+
+                if handleKeyStrokes?
+
+                    handleKeyStrokes ch, key
+
+                return # a command is running, TODO: ^c (to stop somehow)
 
             try if key.name == 'return'
 

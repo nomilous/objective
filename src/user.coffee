@@ -1,6 +1,10 @@
+return
+
 fs = require 'fs'
 
 {error} = require './logger'
+
+
 
 module.exports = 
 
