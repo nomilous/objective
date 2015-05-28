@@ -1,9 +1,10 @@
-objective 'Untitled',
+objective 'Objective Title',
 
     uuid: '37e72020-a8ce-45cd-b8af-fd97eed3771e'
     description: ''
     private: false
     plugins: ['objective-dev']
+    repl: listen: '/tmp/mooo-file'
 
 .run (recurse, prompt) ->
 
@@ -17,9 +18,8 @@ objective 'Untitled',
 
     #     console.log e if e?
 
-    #     dev.reporters.default.enable()
+    # #     dev.reporters.default.enable()
 
-        # dev.stacks()
+    #     # dev.stacks()
     
-        prompt()
-
+        prompt.start()

@@ -189,10 +189,10 @@ objective 'SomethingClassy',
 
                 lloyd.does
 
-                    $$sleep: (arg) ->
+                    $sleep: (arg) ->
 
                         #
-                        #  '$$' means spy...
+                        #  '$' means spy...
                         #
                         #            on function 'sleep()'
                         # 

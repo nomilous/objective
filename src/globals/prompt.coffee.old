@@ -1,3 +1,7 @@
+{info, error, TODO} = objective.logger
+
+debug = objective.logger.createDebug 'prompt'
+
 {createEvent, emit} = require './pipeline'
 
 createEvent 'prompt.commands.register.ask'

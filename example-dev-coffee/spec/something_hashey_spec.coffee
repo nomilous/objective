@@ -22,6 +22,6 @@ objective ->
     #              # do some stuff with cloud
     #
 
+    # throw new Error('E');
 
-    it 'pending', ->
-
+    1 

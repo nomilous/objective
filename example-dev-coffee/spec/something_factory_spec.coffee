@@ -7,7 +7,20 @@ objective 'SomethingFactory'
 
 .run ->
 
-    before (done) -> setTimeout done, 200
+    before -> 
+
+        require('http').spy = ->
+
+        mock 'thing', 
+
+            fn1: -> 1
+
+            fn2: -> 2
+
+        @test = spy: ->
+
+        #mock 'moo', @test
+
 
     it 'passes', -> 1
 
@@ -15,8 +28,39 @@ objective 'SomethingFactory'
 
     context 'context', ->
 
-        it 'fails', (should) -> 
+        it 'fails', (should) ->
 
-            1.should.equal 2
+            2.should.equal 2
 
-    it 'pends', -> 
+    it 'pends', ->
+
+
+    xit 'another fails', (should) ->
+
+        2.should.equal 2
+
+    it 'more fails', (thing, http) ->
+
+        thing.stub 
+
+            fn1: -> 
+
+                #console.log original.toString()
+
+                return '2'
+
+
+        # console.log thing
+
+        # thing.does 
+
+        #     # spy: fn2: -> console.log arguments
+
+        #     # stub: fn1: -> console.log 'ad'
+
+
+
+        thing.fn1(1)    # .should.equal 1
+
+        # thing.fn2('x').should.equal 2
+
