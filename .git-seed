@@ -11,11 +11,19 @@
     },
     {
       "root": false,
+      "workDir": "./node_modules/debug",
+      "packageManager": "npm",
+      "remote.origin.url": "https://github.com/nomilous/debug.git",
+      "HEAD": "refs/heads/master",
+      "version": "da053418efe048bfc0efc370479f65902dc92feb"
+    },
+    {
+      "root": false,
       "workDir": "./node_modules/objective-dev",
       "packageManager": "npm",
       "remote.origin.url": "git@github.com:nomilous/objective-dev.git",
       "HEAD": "refs/heads/master",
-      "version": "acc75ed27eeb2658ecca278e4bc1ba077e00cb72"
+      "version": "13e398a0df78c84f4debf320aca964a5ec31440e"
     }
   ]
 }
