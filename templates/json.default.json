@@ -1,0 +1,8 @@
+{
+  "uuid": "__UUID__",
+  "description": "pending description",
+  "repl": {
+    "listen": "/tmp/socket-__UUID__"
+  },
+  "plugins": {}
+}

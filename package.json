@@ -12,6 +12,7 @@
     "commander": "^2.8.1",
     "debug": "git+https://github.com/nomilous/debug.git",
     "decor": "0.0.2",
+    "dev-null": "^0.1.1",
     "isbinaryfile": "^2.0.4",
     "keypress": "^0.2.1",
     "mkpath": "^0.1.0",

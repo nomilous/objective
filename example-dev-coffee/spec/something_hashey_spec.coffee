@@ -24,4 +24,4 @@ objective ->
 
     # throw new Error('E');
 
-    1 
+    it 'fails', -> 1 # throw new Error ''
