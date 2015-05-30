@@ -11,12 +11,15 @@ objective 'Example Dev',
 
 .run (link, recurse, prompt) ->
 
+    # A promise chain initializes the dev runtime.
+    # --------------------------------------------
+
     #
-    # Also working on a dependancy module, include it into this process
-    # as a sibling root objective.
+    # Also working on a dependancy module, include it as a sibling 
+    # root objective.
     #
 
-    link './node_modules/dependancy/objective'
+    link.root './node_modules/dependancy/objective'
 
     #
     # Recurse the source and test directories, the plugin (objective-dev)
@@ -45,7 +48,7 @@ objective 'Example Dev',
         # Show & Tell
         # 
 
-        console.log('Error -->', e);
+        console.log('Error -->', e.stack);
 
         #
         # The objective won't exit if the repl.listen config
