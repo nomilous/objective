@@ -10,10 +10,12 @@ objective({
       defaultMessage: '(als)o',
     }
   }
-}).run(function(prompt, plugins) {
+}).run(function(prompt, plugins, recurse) {
 
-  plugins.example.start();
+  console.log(recurse);
 
-  prompt.start();
+  // plugins.example.start();
+
+  // prompt.start();
 
 });
