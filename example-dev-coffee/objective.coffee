@@ -1,25 +1,56 @@
-objective 'Objective Title',
+objective 'Example Dev',
 
     uuid: '37e72020-a8ce-45cd-b8af-fd97eed3771e'
     description: ''
-    private: false
-    plugins: ['objective-dev']
-    repl: listen: '/tmp/mooo-file'
+    repl: listen: '/tmp/socket-37e72020-a8ce-45cd-b8af-fd97eed3771e'
+    plugins:
+        'objective-dev':      # {}
+            sourceDir: 'src'  # non defaults.
+            compileTo: 'lib'
+            testDir: 'spec'
 
-.run (recurse, prompt) ->
+.run (link, recurse, prompt) ->
 
-    {dev} = objective.plugins
+    #
+    # Also working on a dependancy module, include it into this process
+    # as a sibling root objective.
+    #
 
-    dev.testDir = 'spec'
-    dev.sourceDir = 'src'
-    dev.compileTo = 'lib'
+    link './node_modules/dependancy/objective'
 
-    recurse ['spec', 'src'], createDir: true, (e) ->
+    #
+    # Recurse the source and test directories, the plugin (objective-dev)
+    # is listening to the recurse events with a twofold purpose:
+    #
+    # 1. to run the tests it finds
+    # 2. to set a watch on sources and tests to run on change
+    # 
+    # Note: Tests are also objectives.
+    #       But they are children of their respective root.
+    #
 
-    #     console.log e if e?
+    .then -> recurse ['spec', 'src'], createDir: true
 
-    # #     dev.reporters.default.enable()
-
-    #     # dev.stacks()
+    #
+    # Recurse has completed. Start the prompt. The plugin (objective-dev)
+    # has installed some usefull utility commands accessable via the prompt.
+    # 
     
-        prompt.start()
+    .then -> prompt.start()
+
+    .catch (e) ->
+
+        #
+        # Something in the prceding promise chain has failed.
+        # Show & Tell
+        # 
+
+        console.log('Error -->', e);
+
+        #
+        # The objective won't exit if the repl.listen config
+        # was present.
+        # 
+
+        # process.exit(1);
+
