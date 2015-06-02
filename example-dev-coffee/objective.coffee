@@ -1,5 +1,6 @@
 objective 'Example Dev',
-
+    
+    codename: 'shortnameForConvenience'
     uuid: '37e72020-a8ce-45cd-b8af-fd97eed3771e'
     description: ''
     repl: listen: '/tmp/socket-37e72020-a8ce-45cd-b8af-fd97eed3771e'

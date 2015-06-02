@@ -7,9 +7,11 @@ objective 'SomethingFactory'
 
 .run (should) ->
 
-    it 'creates a default name', (Subject) ->
+    it 'creates a default name', (SomethingFactory) ->
 
-        thing = Subject.create()
+        # console.log mock('one', t = {a:1});
+        # console.log x: mock('three', []);
+        thing = SomethingFactory.create()
 
         thing.name.should.equal 'untitled 1'
 

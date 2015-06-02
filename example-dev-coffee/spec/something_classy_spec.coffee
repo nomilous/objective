@@ -2,9 +2,6 @@ objective 'SomethingClassy',
 
     uuid: '04f92eba-3400-401e-befa-ea78ab5dd895'
     description: ''
-    private: false
-    plugins: ['objective-dev']
-
                         #
                         # Config: What a mission?
                         # 
@@ -17,101 +14,98 @@ objective 'SomethingClassy',
 
 .run ->
 
+    before ->
+
+        mock('moo').stub f: -> 1
+
+
+
     before -> # doing nothing in root before and after hooks
 
-    # after ->
+    after ->
+
+                        #
+                        # When injecting with FirstCapitalLetter
+                        # modules from lib/ or src/ are injected
+                        #    (here eg. src/something_classy.coffee)
+                        #           ie. searches by name with sen-
+                        #                                         sible
+                        #                                         deLimiter
+                        #
+    beforeEach (SomethingClassy) ->
+
+        # create a mockable instance of Lloyd Blankfein
+        #                                (some banker)
+        #
+
+        mock 'lloyd', new SomethingClassy 'Lloyd Blankfein'
+
+        #
+        # this mock instance encroach can now be injected into
+        # all decendant test nodes
+        #
+        # AND
+        #
+        # it has a .does() function to create expectations
+        # 
+        # specifically function expectations
+        # 
 
 
+    context 'during the day', ->
 
+        it 'eats', (done, lloyd, moo) ->
 
-    #           #
-    #           # modules from lib/ or src/ can be injected
-    #           #    (here eg. src/something_classy.coffee)
-    #           #           ie. searches by name with sen-
-    #           #                                         sible
-    #           #                                         deLimiter
+            console.log moo.f.toString()
 
-    # beforeEach (SomethingClassy) ->
+            # moo.f().should.equal 1
+                            #
+                            #
+                            # see how lloyd got injected
+                            # 
 
-    #     # create a mockable instance of Lloyd Blankfein
-    #     #                                (some banker)
-    #     #
+            # lloyd.does(     # .........  These
 
-    #     mock 'lloyd', new SomethingClassy 'Lloyd Blankfein'
+            #     eat: -> 'food'
 
-    #     #
-    #     # this mock instance encroach can now be injected into
-    #     # all decendant test nodes
-    #     #
-    #     # AND
-    #     #
-    #     # it has a .does() function to create expectations
-    #     # 
-    #     # specifically function expectations
-    #     # 
+            #     # whole: ->
 
+            #     # bunch: ->
 
+            # )               # .........  brackets...
 
+            # having just replaced lloyd's eat method with an
+            # expectation that he will eat before the test is
+            # out
 
-    # mock 'he', it  # just because it's possible........
+            setTimeout done, 200
 
+            #
+            # this test will fail
+            # -------------------
+            # 
+            # 1. if eat() was not called before done
+            # 2. if eat() was called more than once
+            # 3. encroach
+            #
 
-    # context 'during the day', (he) -> # .....to do this
-
-
-    #   # it 'eats', (....
-
-    #     he 'eats', (done, lloyd) ->
-
-    #                         #
-    #                         # see how lloyd got injected
-    #                         #
-    #                         # 
-    #                         #
-
-
-    #         lloyd.does(     # .........  These
-
-    #             eat: -> 'food'
-
-    #             # whole: ->
-
-    #             # bunch: ->
-
-    #         )               # .........  brackets...
-
-    #         # having just replaced lloyd's eat method with an
-    #         # expectation that he will eat before the test is
-    #         # out
-
-    #         setTimeout done, 200
-
-    #         #
-    #         # this test will fail
-    #         # -------------------
-    #         # 
-    #         # 1. if eat() was not called before done
-    #         # 2. if eat() was called more than once
-    #         # 3. encroach
-    #         #
-
-    #         #
-    #         # Answer: 2
-    #         # 
-    #         # ExpectationError: Function expectations were not met
-    #         # 
-    #         # {
-    #         #   "lloyd [SomethingClassy]": {
-    #         #     "functions": {
-    #         #       "eat()": "PROBLEM - ran 4 times of expected 1"
-    #         #     }
-    #         #   }
-    #         # }
-    #         # 
-    #         # 
-    #         # Because lloyd eats twenty times a second
-    #         #                        (see constructor)
-    #         # 
+            #
+            # Answer: 2
+            # 
+            # ExpectationError: Function expectations were not met
+            # 
+            # {
+            #   "lloyd [SomethingClassy]": {
+            #     "functions": {
+            #       "eat()": "PROBLEM - ran 4 times of expected 1"
+            #     }
+            #   }
+            # }
+            # 
+            # 
+            # Because lloyd eats twenty times a second
+            #                        (see constructor)
+            # 
 
 
     #     he 'works very hard', (lloyd, should) ->
