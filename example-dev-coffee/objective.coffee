@@ -8,6 +8,13 @@ objective 'Example Dev',
             sourceDir: 'src'  # non defaults.
             compileTo: 'lib'
             testDir: 'spec'
+            testAppend: '_spec'
+            # reporter: 'default'
+            # reporters:
+            #     default: {}
+            #     another:
+            #         with: 'config'
+
 
 .run (link, recurse, prompt) ->
 

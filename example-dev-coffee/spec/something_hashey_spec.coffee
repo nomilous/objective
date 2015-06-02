@@ -1,27 +1,27 @@
 objective ->
 
-    #
-    # Objective can be passed as an anonymous funtion
-    # without config or title.
-    # 
-    #         Silly not to title it tho...
-    # 
-    #   eg.
-    #         objective 'Make Fluffy Cloud Float Slowly North', ->
-    #        
-    # 
-    #
-    # Injection also works at the root, but only for
-    # node modules and [objective globals].
-    # 
-    # And it does not attach the mocker (.does())
-    #
-    #   eg.
-    #         objective (cloud) ->
-    #         
-    #              # do some stuff with cloud
-    #
+    # #
+    # # Objective can be passed as an anonymous funtion
+    # # without config or title.
+    # # 
+    # #         Silly not to title it tho...
+    # # 
+    # #   eg.
+    # #         objective 'Make Fluffy Cloud Float Slowly North', ->
+    # #        
+    # # 
+    # #
+    # # Injection also works at the root, but only for
+    # # node modules and [objective globals].
+    # # 
+    # # And it does not attach the mocker (.does())
+    # #
+    # #   eg.
+    # #         objective (cloud) ->
+    # #         
+    # #              # do some stuff with cloud
+    # #
 
-    # throw new Error('E');
+    # # throw new Error('E');
 
-    it 'fails', -> 1 # throw new Error ''
+    it 'passes', -> # throw new Error ''

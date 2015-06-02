@@ -5,62 +5,66 @@ objective 'SomethingFactory'
     # private: false
     # plugins: ['objective-dev']
 
-.run ->
+.run (should) ->
 
-    before -> 
+    it 'creates a default name', (Subject) ->
 
-        require('http').spy = ->
+        thing = Subject.create()
 
-        mock 'thing', 
+        thing.name.should.equal 'untitled 1'
 
-            fn1: -> 1
+    #     require('http').spy = ->
 
-            fn2: -> 2
+    #     mock 'thing', 
 
-        @test = spy: ->
+    #         fn1: -> 1
 
-        #mock 'moo', @test
+    #         fn2: -> 2
 
+    #     @test = spy: ->
 
-    it 'passes', -> 1
-
-    it 'passes', -> 2
-
-    context 'context', ->
-
-        it 'fails', (should) ->
-
-            2.should.equal 2
-
-    it 'pends', ->
+    #     #mock 'moo', @test
 
 
-    xit 'another fails', (should) ->
+    # it 'passes', -> 1
 
-        2.should.equal 2
+    # it 'passes', -> 2
 
-    it 'more fails', (thing, http) ->
+    # context 'context', ->
 
-        thing.stub 
+    #     it 'fails', (should) ->
 
-            fn1: -> 
+    #         2.should.equal 2
 
-                #console.log original.toString()
-
-                return '2'
+    # it 'pends', ->
 
 
-        # console.log thing
+    # xit 'another fails', (should) ->
 
-        # thing.does 
+    #     2.should.equal 2
 
-        #     # spy: fn2: -> console.log arguments
+    # it 'more fails', (thing, http) ->
 
-        #     # stub: fn1: -> console.log 'ad'
+    #     thing.stub 
+
+    #         fn1: -> 
+
+    #             #console.log original.toString()
+
+    #             return '2'
+
+
+    #     # console.log thing
+
+    #     # thing.does 
+
+    #     #     # spy: fn2: -> console.log arguments
+
+    #     #     # stub: fn1: -> console.log 'ad'
 
 
 
-        thing.fn1(1)    # .should.equal 1
+    #     thing.fn1(1)    # .should.equal 1
 
-        # thing.fn2('x').should.equal 2
+    #     # thing.fn2('x').should.equal 2
 

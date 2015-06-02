@@ -2,72 +2,75 @@
 
 describe 'Objective', ->
 
-
-    it 'is global', ipso (Objective) ->
-
-        (objective?).should.equal true
+    # require '../lib/objective'
 
 
-    it 'is can run with multiple arg combinations', ipso (Objective) ->
+    # it 'is global', ipso (Objective) ->
 
-        Objective.does run: -> arguments.should.eql
-
-            '0': title: 'Untitled Objective'
-            '1': undefined
-
-        Objective()
+    #     (objective?).should.equal true
 
 
-    it 'is can run with multiple arg combinations', ipso (Objective, should) ->
+    # it 'is can run with multiple arg combinations', ipso (Objective) ->
 
-        Objective.does _run: -> arguments.should.eql
+    #     Objective.does run: -> arguments.should.eql
 
-            '0': title: 'Title'
-            '1': undefined
+    #         '0': title: 'Untitled Objective'
+    #         '1': undefined
 
-        result = Objective 'Title'
-
-        should.exist result.run
+    #     Objective()
 
 
-    it 'is can run with multiple arg combinations', ipso (Objective, should) ->
+    # it 'is can run with multiple arg combinations', ipso (Objective, should) ->
 
-        Objective.does _run: -> 
+    #     Objective.does _run: -> arguments.should.eql
 
-            arguments[0].should.eql
+    #         '0': title: 'Title'
+    #         '1': undefined
 
-                title: 'Untitled Objective'
+    #     result = Objective 'Title'
 
-            (typeof arguments[1] == 'function').should.equal true
-
-        result = Objective ->
-
-        should.not.exist result.run
+    #     should.exist result.run
 
 
-    it 'is can run with multiple arg combinations', ipso (Objective, should) ->
+    # it 'is can run with multiple arg combinations', ipso (Objective, should) ->
 
-        Objective.does _run: -> arguments.should.eql
+    #     Objective.does _run: -> 
 
-            '0': title: 'Title', config: 'option'
-            '1': undefined
+    #         arguments[0].should.eql
 
-        result = Objective 'Title', {config: 'option'}
+    #             title: 'Untitled Objective'
 
-        should.exist result.run
+    #         (typeof arguments[1] == 'function').should.equal true
+
+    #     result = Objective ->
+
+    #     should.not.exist result.run
 
 
-    it 'is can run with multiple arg combinations', ipso (Objective, should) ->
+    # it 'is can run with multiple arg combinations', ipso (Objective, should) ->
 
-        Objective.does _run: -> 
+    #     Objective.does _run: -> arguments.should.eql
 
-            arguments[0].should.eql
+    #         '0': title: 'Title', config: 'option'
+    #         '1': undefined
 
-                title: 'Title'
-                config: 'option'
+    #     result = Objective 'Title', {config: 'option'}
 
-            (typeof arguments[1] == 'function').should.equal true
+    #     should.exist result.run
 
-        result = Objective 'Title', {config: 'option'}, ->
 
-        should.not.exist result.run
+    # it 'is can run with multiple arg combinations', ipso (Objective, should) ->
+
+    #     Objective.does _run: -> 
+
+    #         arguments[0].should.eql
+
+    #             title: 'Title'
+    #             config: 'option'
+
+    #         (typeof arguments[1] == 'function').should.equal true
+
+    #     result = Objective 'Title', {config: 'option'}, ->
+
+    #     should.not.exist result.run
+
