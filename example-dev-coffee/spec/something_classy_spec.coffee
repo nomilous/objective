@@ -14,13 +14,7 @@ objective 'SomethingClassy',
 
 .run ->
 
-    before ->
-
-        mock('moo').stub f: -> 1
-
-
-
-    before -> # doing nothing in root before and after hooks
+    before (moo) -> # doing nothing in root before and after hooks
 
     after ->
 
@@ -32,7 +26,7 @@ objective 'SomethingClassy',
                         #                                         sible
                         #                                         deLimiter
                         #
-    beforeEach (SomethingClassy) ->
+    xbeforeEach (SomethingClassy) ->
 
         # create a mockable instance of Lloyd Blankfein
         #                                (some banker)
@@ -56,9 +50,8 @@ objective 'SomethingClassy',
 
         it 'eats', (done, lloyd, moo) ->
 
-            console.log moo.f.toString()
+            console.log('in test!');
 
-            # moo.f().should.equal 1
                             #
                             #
                             # see how lloyd got injected

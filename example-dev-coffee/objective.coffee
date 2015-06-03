@@ -47,21 +47,21 @@ objective 'Example Dev',
     # has installed some usefull utility commands accessable via the prompt.
     # 
     
-    .then -> prompt.start()
+    # .then -> # prompt.start()
 
-    .catch (e) ->
+    # .catch (e) ->
 
-        #
-        # Something in the prceding promise chain has failed.
-        # Show & Tell
-        # 
+    #     #
+    #     # Something in the prceding promise chain has failed.
+    #     # Show & Tell
+    #     # 
 
-        console.log('Error -->', e.stack);
+    #     console.log('Error -->', e.stack);
 
-        #
-        # The objective won't exit if the repl.listen config
-        # was present.
-        # 
+    #     #
+    #     # The objective won't exit if the repl.listen config
+    #     # was present.
+    #     # 
 
-        # process.exit(1);
+    #     # process.exit(1);
 

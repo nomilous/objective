@@ -7,7 +7,7 @@ objective 'SomethingFactory'
 
 .run (should) ->
 
-    it 'creates a default name', (SomethingFactory) ->
+    xit 'creates a default name', (SomethingFactory) ->
 
         # console.log mock('one', t = {a:1});
         # console.log x: mock('three', []);
