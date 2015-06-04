@@ -8,4 +8,4 @@ objective
 
 .run (prompt) ->
 
-    prompt.start()
+    # prompt.start()

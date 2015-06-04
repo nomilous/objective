@@ -14,6 +14,9 @@ objective 'SomethingClassy',
 
 .run ->
 
+    # skipping because of context.only() at the end
+
+
     before -> # doing nothing in root before and after hooks
 
     after ->
@@ -35,7 +38,7 @@ objective 'SomethingClassy',
         mock 'lloyd', new SomethingClassy 'Lloyd Blankfein'
 
         #
-        # this mock instance encroach can now be injected into
+        # this mock instance can now be injected into
         # all decendant test nodes
         #
         # AND
@@ -145,5 +148,5 @@ objective 'SomethingClassy',
 
 
 
-    context.only 'lloyd does nothing', ->
+    # context.only 'lloyd does nothing', ->
 

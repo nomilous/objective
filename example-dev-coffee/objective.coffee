@@ -47,7 +47,7 @@ objective 'Example Dev',
     # has installed some usefull utility commands accessable via the prompt.
     # 
     
-    # .then -> # prompt.start()
+    .then -> # prompt.start()
 
     # .catch (e) ->
 
