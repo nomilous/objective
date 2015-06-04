@@ -14,7 +14,7 @@ objective 'SomethingClassy',
 
 .run ->
 
-    before (moo) -> # doing nothing in root before and after hooks
+    before -> # doing nothing in root before and after hooks
 
     after ->
 
@@ -26,7 +26,7 @@ objective 'SomethingClassy',
                         #                                         sible
                         #                                         deLimiter
                         #
-    xbeforeEach (SomethingClassy) ->
+    beforeEach (SomethingClassy) ->
 
         # create a mockable instance of Lloyd Blankfein
         #                                (some banker)
@@ -48,24 +48,22 @@ objective 'SomethingClassy',
 
     context 'during the day', ->
 
-        it 'eats', (done, lloyd, moo) ->
-
-            console.log('in test!');
+        it 'eats', (done, lloyd) ->
 
                             #
                             #
                             # see how lloyd got injected
                             # 
 
-            # lloyd.does(     # .........  These
 
-            #     eat: -> 'food'
+            lloyd.does
 
-            #     # whole: ->
+                eat: -> 'food'
 
-            #     # bunch: ->
+                # whole: ->
 
-            # )               # .........  brackets...
+                # bunch: ->
+
 
             # having just replaced lloyd's eat method with an
             # expectation that he will eat before the test is
@@ -77,146 +75,75 @@ objective 'SomethingClassy',
             # this test will fail
             # -------------------
             # 
-            # 1. if eat() was not called before done
+            # 1. because lloyd eats 20 times a second
             # 2. if eat() was called more than once
-            # 3. encroach
             #
 
+
+        it 'works very hard', (lloyd, should) ->
+
+
+            lloyd.does
+
+                work: (hard) -> 
+
+                    hard.should.equal true
+
+                    @relax()
+
+                relax: ->
+
+                    throw (
+                        e  = new Error 'No rest for the wicked!'
+                        e.extraInfo = 'zerozerozeroseroseyrosey'
+                        e
+                    )
+
+
+            lloyd.work true
+
             #
-            # Answer: 2
+            # this test will fail
+            # -------------------
             # 
-            # ExpectationError: Function expectations were not met
-            # 
-            # {
-            #   "lloyd [SomethingClassy]": {
-            #     "functions": {
-            #       "eat()": "PROBLEM - ran 4 times of expected 1"
-            #     }
-            #   }
-            # }
-            # 
-            # 
-            # Because lloyd eats twenty times a second
-            #                        (see constructor)
-            # 
+            # 1. because relax was called
+            # 2. and
+            # 3. that means lloyd is not working very hard
+            #
 
 
-    #     he 'works very hard', (lloyd, should) ->
+    context 'during the night', ->
 
-
-    #         lloyd.does(         # .........  aren't...
-
-    #             work: (hard) -> 
-
-    #                 hard.should.equal true
-
-    #                 @relax()
-
-    #             relax: ->
-
-    #                 throw (
-    #                     e  = new Error 'No rest for the wicked!'
-    #                     e.extraInfo = 'zerozerozeroseroseyrosey'
-    #                     e
-    #                 )
-            
-    #         )                  # .........  necessary!
-
-
-    #         lloyd.work true
-
-    #         #
-    #         # this test will fail
-    #         # -------------------
-    #         # 
-    #         # 1. because relax was called
-    #         # 2. and
-    #         # 3. that means lloyd is not working very hard
-    #         #
-
-    #         #
-    #         # Answer: 1
-    #         # 
-    #         # FAILED during the day + works hard
-    #         # ExpectationError: Exception in expectation
-    #         # {
-    #         #    "lloyd [SomethingClassy]": {
-    #         #       "functions": {
-    #         #          "work()": {
-    #         #             "OK": "Ran 1 times as expected"
-    #         #          },
-    #         #          "relax()": {
-    #         #             "ERROR": "Error: No rest for the wicked!",
-    #         #             "error": {
-    #         #                "extraInfo": "zerozerozerozeroseyrosey"
-    #         #             }
-    #         #          }
-    #         #          "encroach()": {
-    #         #               "OK": "Ran 0 times as exspectred"
-    #         #          }
-    #         #       }
-    #         #    }
-    #         # }                                           still working
-    #         #                                             on the result
-    #         #                                             presentatio n
-    #         #                                  ps.           
-    #         #                                             perhaps there
-    #         #                                             is too much i
-    #         #                                             n f o rmation
-    #         #
-
-
-    # context 'during the night', ->
-
-    #     it 'lets us spy on lloyd sleeping',
+        it 'lets us spy on lloyd sleeping',
         
-    #         (lloyd, should, done) ->
+            (lloyd, should, done) ->
 
-    #             lloyd.does
+                lloyd.spy
 
-    #                 $sleep: (arg) ->
+                    sleep: (arg) ->
 
-    #                     #
-    #                     #  '$' means spy...
-    #                     #
-    #                     #            on function 'sleep()'
-    #                     # 
-    #                     #       ie.  1. receive sleep's arguments for testing
-    #                     #            2. original runs after spy
-    #                     #               2.1. no feature to stop it (yet?)
-    #                     #            3. test foes not fail if spy was never called
-    #                     #     encroach. encroach
-    #                     #            4. spy can be called any number of times
-    #                     # 
+                        arg.should.equal 'tight'
 
-    #                     arg.should.equal 'tight'
-
-    #                         #
-    #                         # this test will not fail
-    #                         # -----------------------
-    #                         # 
-    #                         # 1. because 'tight' is 'tight'
-    #                         # 
+                            #
+                            # this test will not fail
+                            # -----------------------
+                            # 
+                            # 1. because 'tight' is 'tight'
+                            # 
 
 
 
-    #             lloyd.sleep 'tight'
+                lloyd.sleep 'tight'
 
-    #             .should.equal 'Goodnight Lloyd Blankfein, sleep tight...'
+                .should.equal 'Goodnight Lloyd Blankfein, sleep tight...'
 
-    #             done()
-
-
-
-    # afterEach (lloyd) -> clearTimeout lloyd.eatInterval
+                done()
 
 
 
-    # # context.only 'this one', -> # not yet...
+    afterEach (lloyd) -> clearTimeout lloyd.eatInterval
 
 
 
+    context.only 'lloyd does nothing', ->
 
-
-
-        

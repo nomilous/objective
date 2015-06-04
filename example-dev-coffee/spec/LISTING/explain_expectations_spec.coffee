@@ -1,4 +1,4 @@
-objective 'Explain', ->
+objective 'Explaining', ->
 
     class Impaler
 
@@ -13,7 +13,7 @@ objective 'Explain', ->
 
         vlad.charityWork().should.equal 'no way!'
 
-    it 'explain expectation', (vlad) ->
+    it 'explains expectation', (vlad) ->
 
         vlad.does charityWork: -> 'serve soup'
 
