@@ -9,11 +9,11 @@ objective 'Explaining', ->
 
     # beforeEach -> mock 'vlad', new Impaler()  # new instance for each test
 
-    it.only 'shows original function', (vlad) ->
+    it 'shows original function', (vlad) ->
 
         vlad.charityWork().should.equal 'no way!'
 
-    it 'explains expectation', (vlad) ->
+    xit 'explains expectation', (vlad) ->
 
         vlad.does charityWork: -> 'serve soup'
 

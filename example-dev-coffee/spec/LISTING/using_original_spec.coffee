@@ -1,6 +1,6 @@
 objective ->
 
-    xit 'allows calling original function from within mock function', (fs) ->
+    it 'allows calling original function from within mock function', (fs) ->
 
         # stub everything on fs
 
@@ -17,9 +17,11 @@ objective ->
 
             fs.stub "#{funcName}": ->
 
+                # console.log ooo: original
+
                 console.log funcName, arguments
 
-                original.apply null, arguments
+                mock.original.apply null, arguments
 
 
 
@@ -27,5 +29,4 @@ objective ->
         # watch the search for a non-existant module
 
         try require('non-existant-module')
-
 

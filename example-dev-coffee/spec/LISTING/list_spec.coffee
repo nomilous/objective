@@ -3,7 +3,7 @@ objective ->
     try
 
         mock() # make mockable
-        wait() # & see. with --attach (repl)
+        wait() # & see.* with repl
 
         it()
         it.only() # runs only this it (and others with .only)
