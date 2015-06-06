@@ -2,8 +2,9 @@ objective ->
 
     try
 
-        mock() # make mockable
-        wait() # & see.* with repl
+        mock()  # make mockable
+        wait()  # & see.* with repl
+        flush() # flushes require cache and mocks back to test starting state
 
         it()
         it.only() # runs only this it (and others with .only)

@@ -1,6 +1,6 @@
 objective ->
 
-    it 'allows calling original function from within mock function', (fs) ->
+    xit 'allows calling original function from within mock function', (fs) ->
 
         # stub everything on fs
 

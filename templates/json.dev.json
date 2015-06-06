@@ -1,0 +1,14 @@
+{
+  "uuid": "__UUID__",
+  "description": "pending description",
+  "repl": {
+    "listen": "/tmp/socket-__UUID__"
+  },
+  "plugins": {
+    "objective-dev": {
+      "testDir": "spec",
+      "testAppend": "_spec",
+      "sourceDir": "lib"
+    }
+  }
+}

@@ -30,6 +30,7 @@ objective (should) ->
         thing.method().should.equal 'ORIGINAL'
 
 
+
     class AnotherThing
 
         method: -> 'ORIGINAL'
@@ -62,7 +63,6 @@ objective (should) ->
             a.method().should.equal 'ORIGINAL'
 
             # console.log AnotherThing.prototype.method.toString()
-
 
 
 

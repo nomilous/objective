@@ -24,4 +24,9 @@ objective ->
 
     # # throw new Error('E');
 
-    it 'passes', -> # throw new Error ''
+
+
+    it 'passes', -> 
+
+        require 'ipso'
+        flush(true) # throw new Error ''

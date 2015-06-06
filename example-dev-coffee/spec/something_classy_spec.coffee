@@ -17,9 +17,9 @@ objective 'SomethingClassy',
     # skipping because of context.only() at the end
 
 
-    before -> # doing nothing in root before and after hooks
+    before ->
 
-    after ->
+    after -> 
 
                         #
                         # When injecting with FirstCapitalLetter
@@ -35,6 +35,8 @@ objective 'SomethingClassy',
         #                                (some banker)
         #
 
+        console.log 'beforeEach'
+
         mock 'lloyd', new SomethingClassy 'Lloyd Blankfein'
 
         #
@@ -49,7 +51,7 @@ objective 'SomethingClassy',
         # 
 
 
-    context 'during the day', ->
+    xcontext 'during the day', ->
 
         it 'eats', (done, lloyd) ->
 

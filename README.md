@@ -1,29 +1,10 @@
-`npm install objective -g`
+`sudo` `npm install objective -g`
 
-#### Version 0.0.11
+#### Version 0.0.14
 
-Note: On windows there will be problems. Your fix will be greatly appreciated. (It gets a bit hairy in the prompt auto completion regarding paths)
-
+ThingIs: On windows there may still be problems... Your fix will be greatly appreciated.
 
 objective
 =========
 
-
-
-Todo
-----
-
-* ^c on running command (stop somehow)
-* todo command, owner can assign (perhaps by cli, in test binds to test)
-* reconnect re-initialises plugins
-
-
-Special in Docs
----------------
-
-* files.recurse.load.fatal? (cancel)
-* files.recurse.load? (cancel, and other in recursor)
-* (error) into runner
-* promise returned by runner (notify), pipeline
-
-
+Pending Documentation.

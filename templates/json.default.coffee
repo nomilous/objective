@@ -1,4 +1,3 @@
 objective '__TITLE__', (prompt) ->
 
-    prompt.start()
-
+    ### prompt.start() ###
