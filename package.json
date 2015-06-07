@@ -5,6 +5,7 @@
   "bin": {
     "objective": "./bin/objective"
   },
+  "main": "./lib/objective",
   "dependencies": {
     "also": "0.0.14",
     "blessed": "^0.1.56",
