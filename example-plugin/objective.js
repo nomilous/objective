@@ -12,10 +12,8 @@ objective({
   }
 }).run(function(prompt, plugins, recurse) {
 
-  console.log(recurse);
+  plugins.example.start();
 
-  // plugins.example.start();
-
-  // prompt.start();
+  prompt.start();
 
 });

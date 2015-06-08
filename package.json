@@ -7,7 +7,6 @@
   },
   "main": "./lib/objective",
   "dependencies": {
-    "blessed": "^0.1.56",
     "coffee-script": "^1.9.2",
     "commander": "^2.8.1",
     "debug": "git+https://github.com/nomilous/debug.git",
@@ -25,7 +24,6 @@
     "when": "^3.7.3"
   },
   "devDependencies": {
-    "ipso": "0.0.22"
   },
   "repository": "git@github.com:nomilous/objective.git"
 }
