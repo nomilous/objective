@@ -7,7 +7,6 @@
   },
   "main": "./lib/objective",
   "dependencies": {
-    "also": "0.0.14",
     "blessed": "^0.1.56",
     "coffee-script": "^1.9.2",
     "commander": "^2.8.1",

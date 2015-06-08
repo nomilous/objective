@@ -1,93 +1,93 @@
-objective (should) ->
+objective ->
+
+    context '', (should) ->
+
+        class Thing
+
+            method: -> 'ORIGINAL'
+
+        before -> mock 'thing', new Thing
+
+        context 'deeper 1', ->
+
+            beforeEach (thing) ->
+
+                thing.does method: -> 'REPLACED'
+
+            it 'has been replaced', (thing) ->
+
+                thing.method().should.equal 'REPLACED'
 
 
+        context 'deeper 2', ->
 
-    class Thing
+            it 'has the original', (thing) ->
 
-        method: -> 'ORIGINAL'
+                thing.method().should.equal 'ORIGINAL'
 
-    before -> mock 'thing', new Thing
-
-    context 'deeper 1', ->
-
-        beforeEach (thing) ->
-
-            thing.does method: -> 'REPLACED'
-
-        it 'has been replaced', (thing) ->
-
-            thing.method().should.equal 'REPLACED'
-
-
-    context 'deeper 2', ->
-
-        it 'has the original', (thing) ->
+        it 'also has the original back at root', (thing) ->
 
             thing.method().should.equal 'ORIGINAL'
 
-    it 'also has the original back at root', (thing) ->
-
-        thing.method().should.equal 'ORIGINAL'
 
 
+        class AnotherThing
 
-    class AnotherThing
-
-        method: -> 'ORIGINAL'
+            method: -> 'ORIGINAL'
 
 
-    before -> mock 'AnotherThing', AnotherThing
+        before -> mock 'AnotherThing', AnotherThing
 
-    context 'deeper', ->
+        context 'deeper', ->
 
-        beforeEach (AnotherThing) ->
+            beforeEach (AnotherThing) ->
 
-            AnotherThing.does
+                AnotherThing.does
 
-                method: -> 'REPLACED'
+                    method: -> 'REPLACED'
 
-        it 'replaced on the prototype', (AnotherThing) ->
+            it 'replaced on the prototype', (AnotherThing) ->
 
-            a = new AnotherThing
+                a = new AnotherThing
 
-            a.method().should.equal 'REPLACED'
+                a.method().should.equal 'REPLACED'
 
-            # console.log AnotherThing.prototype.method.toString()
+                # console.log AnotherThing.prototype.method.toString()
 
-    context 'deeper 2', ->
+        context 'deeper 2', ->
 
-        it 'has the original', (AnotherThing) ->
+            it 'has the original', (AnotherThing) ->
 
-            a = new AnotherThing
+                a = new AnotherThing
 
-            a.method().should.equal 'ORIGINAL'
+                a.method().should.equal 'ORIGINAL'
 
-            # console.log AnotherThing.prototype.method.toString()
+                # console.log AnotherThing.prototype.method.toString()
 
 
 
-    class ThingNine
+        class ThingNine
 
-        constructor: (@property) ->
+            constructor: (@property) ->
 
-        getIt: -> @property
-
-
-    before -> mock 'ThingNine', ThingNine
+            getIt: -> @property
 
 
-    context 'deeper', ->
+        before -> mock 'ThingNine', ThingNine
 
-        it 'can mock on the class prototype but requires .as(instance) for thisness', (ThingNine) ->
 
-            t9 = new ThingNine('constructor property')
+        context 'deeper', ->
 
-            ThingNine.does(
+            it 'can mock on the class prototype but requires .as(instance) for thisness', (ThingNine) ->
 
-                getIt: -> "changed #{@property}"
+                t9 = new ThingNine('constructor property')
 
-            ).as t9
+                ThingNine.does(
 
-            t9.getIt().should.equal 'changed constructor property'
+                    getIt: -> "changed #{@property}"
+
+                ).as t9
+
+                t9.getIt().should.equal 'changed constructor property'
 
 

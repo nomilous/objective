@@ -5,9 +5,9 @@ objective 'SomethingFactory'
     # private: false
     # plugins: ['objective-dev']
 
-.run (should) ->
+.run ->
 
-    it 'creates a default name', (SomethingFactory) ->
+    it 'creates a default name', (SomethingFactory, should) ->
 
         # console.log mock('one', t = {a:1});
         # console.log x: mock('three', []);
