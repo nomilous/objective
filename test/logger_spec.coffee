@@ -12,5 +12,5 @@ describe 'Logger', ->
     it 'logs', ->
         
         objective.logger.error(
-            'testing error', new ObjectiveError('No problem.')
+            'testing error', new Error('No problem.')
         )

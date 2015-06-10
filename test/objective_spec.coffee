@@ -2,11 +2,19 @@ describe 'Objective', ->
 
     before -> require '../' # package.json
 
-    context 'ObjectiveError()', ->
+    context 'Error()', ->
+
+        it 'overrides Error object', ->
+
+            e = new Error()
+            e.should.be.an.instanceof Error
+            e.should.be.an.instanceof ExpandedError
+
 
         it 'has expanded stack frames starting at creation', ->
 
-            e = new ObjectiveError
+            e = new Error 'message'
+            console.log e
             e.frames[0].fn.toString().should.match /THIS_FUNCTION/
 
     context 'getCaller()', ->
@@ -70,7 +78,7 @@ describe 'Objective', ->
 
         it 'returns the next deferral if new child is started', ->
 
-            console.log objective
+            # console.log objective
 
             #objective ->
 
