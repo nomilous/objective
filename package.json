@@ -5,6 +5,9 @@
   "bin": {
     "objective": "./bin/objective"
   },
+  "scripts": {
+    "test": "node_modules/.bin/mocha --require should --compilers coffee:coffee-script/register test/**/*_spec.* test/*_spec.*"
+  },
   "main": "./lib/objective",
   "dependencies": {
     "coffee-script": "^1.9.2",
@@ -24,6 +27,8 @@
     "when": "^3.7.3"
   },
   "devDependencies": {
+    "mocha": "^2.2.5",
+    "should": "^6.0.3"
   },
   "repository": "git@github.com:nomilous/objective.git"
 }

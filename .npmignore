@@ -1,1 +1,3 @@
 example-plugin
+.gitignore
+.travis.yml
