@@ -2,21 +2,6 @@ describe 'Objective', ->
 
     before -> require '../' # package.json
 
-    context 'Error()', ->
-
-        it 'overrides Error object', ->
-
-            e = new Error()
-            e.should.be.an.instanceof Error
-            e.should.be.an.instanceof ExpandedError
-
-
-        it 'has expanded stack frames starting at creation', ->
-
-            e = new Error 'message'
-            console.log e
-            e.frames[0].fn.toString().should.match /THIS_FUNCTION/
-
     context 'getCaller()', ->
 
         it 'gets the caller from the specified depth', ->
