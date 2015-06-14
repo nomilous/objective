@@ -1,8 +1,6 @@
 [1]:https://github.com/nomilous/objective-dev
 
-`sudo` `npm install objective -g`
-
-#### Version 0.0.16
+`sudo` `npm install objective -g` <br />
 
 <b>On windows there may still be problems...</b> Your fix will be greatly appreciated. I'm happy to help.
 
