@@ -1,6 +1,6 @@
 describe 'Logger', ->
 
-    require '../'
+    require '../../'
 
     it 'defines error, warn, info, createDebug', ->
 
