@@ -10,5 +10,5 @@ objective
 
 
 <b>On windows there may still be problems...</b><br />
-Your fix will be greatly appreciated. <br />
+Your fix(s) will be greatly appreciated. <br />
 I'm happy to help.
