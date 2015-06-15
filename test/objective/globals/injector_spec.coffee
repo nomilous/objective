@@ -126,7 +126,6 @@ describe.only 'Objective Injector', ->
                 details.thisName.should.equal 'unknownArg'
                 (typeof details.thisValue == 'undefined').should.equal true
                 details.thisValue = 'CREATED ARG'
-                console.log('CREATE SKIP')
                 # skip()
 
             objective.injector root,
@@ -155,11 +154,11 @@ describe.only 'Objective Injector', ->
                     next()
 
 
-        it 'calls onError', (done) ->
+        it 'calls onInjectError', (done) ->
 
             objective.injector root,
 
-                onError: (e) ->
+                onInjectError: (e) ->
 
                     e.toString().should.match /Cannot find module \'missing\'/
                     done()
@@ -205,7 +204,7 @@ describe.only 'Objective Injector', ->
             promised.start('ARG')
 
 
-    context 'ignoreError', ->
+    context 'ignoreInjectError', ->
 
         promise = require('when').promise
 
@@ -213,7 +212,7 @@ describe.only 'Objective Injector', ->
 
             objective.injector null,
 
-                onError: -> done()
+                onInjectError: -> done()
 
                 (noSuchModule) ->
 
@@ -224,7 +223,7 @@ describe.only 'Objective Injector', ->
 
             objective.injector null,
 
-                ignoreError: true
+                ignoreInjectError: true
 
                 (noSuchModule) ->
 
@@ -234,7 +233,7 @@ describe.only 'Objective Injector', ->
 
         it 'can get error into injection target via promise start extension', (done) ->
 
-            promised = objective.injector null, ignoreError: true, (noSuchModule) ->
+            promised = objective.injector null, ignoreInjectError: true, (noSuchModule) ->
 
                 p = promise (resolve) -> resolve()
                 p.start = (e) -> 
@@ -245,9 +244,34 @@ describe.only 'Objective Injector', ->
             promised.start()
 
 
+    context 'on run error', ->
+
+        it 'rejects the promise', (done) ->
+
+            objective.injector null, -> throw new Error 'Monday'
+
+            .catch (e) ->
+
+               e.toString().should.match /Monday/
+               done()
 
 
+    context 'on missing promise', ->
 
+        it 'calls for a promise', (done) ->
+
+            # in the case of objective-dev the walker's promise
+            # needs to be used as the objective promise,
+            # 
+            # to explicityly return the promise from the test
+            # would be tedious, so in walker.reset() the
+            # promise is attached to objective.promised for use here
+
+            objective.injector null,
+
+                onMissingPromise: -> then: -> done()
+
+                ->
 
 
 
