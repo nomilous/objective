@@ -1,5 +1,7 @@
 describe 'Objective', ->
 
+    should = require 'should'
+
     before -> require '../' # package.json
 
     context 'getCaller()', ->
@@ -67,3 +69,6 @@ describe 'Objective', ->
 
             #objective ->
 
+    context 'access dev reporters', ->
+
+        should.exist objective.dev.reporters

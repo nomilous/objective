@@ -2,7 +2,7 @@ describe 'ObjectiveError', ->
 
     require '../../lib/objective/error'
 
-    it.only 'overrides Error object', ->
+    it 'overrides Error object', ->
 
         e = new ObjectiveError('message')
         e.should.be.an.instanceof Error

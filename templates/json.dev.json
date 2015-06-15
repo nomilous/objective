@@ -6,8 +6,8 @@
   },
   "plugins": {
     "objective-dev": {
-      "testDir": "spec",
-      "testAppend": "_spec",
+      "testDir": "test",
+      "testAppend": "_test",
       "sourceDir": "lib"
     }
   }
