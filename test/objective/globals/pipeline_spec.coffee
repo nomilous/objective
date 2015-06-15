@@ -1,6 +1,6 @@
 describe 'Globals Pipeline', ->
 
-    require '../../'
+    require '../../../'
 
     it 'defines on, emit, createEvent, startRun, pipes, runs', ->
 
@@ -19,3 +19,11 @@ describe 'Globals Pipeline', ->
     # it '', ->
 
     #     objective.pipeline.on 'event', (->), true
+
+
+    it 'next'
+
+    it 'cancel'
+
+    it 'skip'
+

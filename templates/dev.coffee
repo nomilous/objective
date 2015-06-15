@@ -6,8 +6,8 @@ objective
     repl: listen: '/tmp/socket-__UUID__'
     plugins: 
         'objective-dev':
-            testDir: 'spec'
-            testAppend: '_spec'
+            testDir: 'test'
+            testAppend: '_test'
             sourceDir: 'lib'
 
 .run (recurse) ->
