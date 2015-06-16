@@ -1,7 +1,7 @@
 {
   "name": "objective",
   "description": "",
-  "version": "0.0.18",
+  "version": "0.0.20",
   "bin": {
     "objective": "./bin/objective"
   },
@@ -14,16 +14,13 @@
     "coffee-script": "^1.9.2",
     "commander": "^2.8.1",
     "debug": "git+https://github.com/nomilous/debug.git",
-    "decor": "0.0.2",
     "dev-null": "^0.1.1",
     "isbinaryfile": "^2.0.4",
     "keypress": "^0.2.1",
     "mkpath": "^0.1.0",
     "objective-dev": "0.0.13",
     "prompt": "^0.2.14",
-    "request": "^2.55.0",
     "shortid": "^2.2.2",
-    "socket.io-client": "^1.3.5",
     "uuid": "^2.0.1",
     "when": "^3.7.3"
   },

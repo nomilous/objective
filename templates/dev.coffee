@@ -18,3 +18,4 @@ objective
 
     recurse ['lib', 'spec'], createDir: true
     .then ->
+
