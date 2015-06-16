@@ -10,7 +10,7 @@ objective
             testAppend: '_test'
             sourceDir: 'lib'
             runAll: true
-            fullTrace: false
+            showTrace: false
             filterTrace: false
 
 .run (recurse) ->
