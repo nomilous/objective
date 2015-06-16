@@ -22,16 +22,16 @@ describe.only 'Objective Injector', ->
 
             e = new Error 'Monday'
 
-            objective.injector null, error: e, (e) ->
+            objective.injector error: e, (e) ->
                 e.toString().should.match /Error: Monday/
 
-            .then -> objective.injector null, error: e, (er) ->
+            .then -> objective.injector error: e, (er) ->
                 er.toString().should.match /Error: Monday/         
 
-            .then -> objective.injector null, error: e, (err) ->
+            .then -> objective.injector error: e, (err) ->
                 err.toString().should.match /Error: Monday/
 
-            .then -> objective.injector null, error: e, (error) ->
+            .then -> objective.injector error: e, (error) ->
                 error.toString().should.match /Error: Monday/
 
             .then done
@@ -49,12 +49,12 @@ describe.only 'Objective Injector', ->
                 err.should.equal e.stack
                 done()
 
-            objective.injector null, args:[1], error: e, (noErrorInArgs) ->
+            objective.injector args:[1], error: e, (noErrorInArgs) ->
 
 
-        it 'injects next or done', (_done) ->
+        xit 'injects next or done', (_done) ->
 
-            objective.injector null,
+            objective.injector
 
                 next: -> _done()
 
@@ -66,7 +66,7 @@ describe.only 'Objective Injector', ->
 
         it 'injects plugins, recursor, linker, and globals', (done) ->
 
-            objective.injector root,
+            objective.injector
 
                 plugins: 1
                 recurse: 2
@@ -87,7 +87,7 @@ describe.only 'Objective Injector', ->
 
             # ie. anti-next (without failing/hanging pipeline event)
 
-            objective.injector null,
+            objective.injector
 
                 cancel: -> done()
 
@@ -99,7 +99,7 @@ describe.only 'Objective Injector', ->
 
     it 'injects a sequence of args among the standard args', (done) ->
 
-        objective.injector null,
+        objective.injector
 
             args: [1,2,3,4]
             next: done
@@ -128,8 +128,9 @@ describe.only 'Objective Injector', ->
                 details.thisValue = 'CREATED ARG'
                 # skip()
 
-            objective.injector root,
+            objective.injector
 
+                root: root
                 args: [1,2]
                 next: done
 
@@ -143,7 +144,7 @@ describe.only 'Objective Injector', ->
 
         it 'falls back to node modules', (done) ->
 
-            objective.injector null,
+            objective.injector
 
                 args: [1,2]
                 next: done
@@ -156,7 +157,7 @@ describe.only 'Objective Injector', ->
 
         it 'calls onInjectError', (done) ->
 
-            objective.injector root,
+            objective.injector
 
                 onInjectError: (e) ->
 
@@ -173,7 +174,7 @@ describe.only 'Objective Injector', ->
 
         it 'proxies the promise returned by the injection target', (done) ->
 
-            promised = objective.injector null, ->
+            promised = objective.injector ->
 
                 return promise (resolve, reject) ->
 
@@ -187,7 +188,7 @@ describe.only 'Objective Injector', ->
 
         it 'passes the call to start', (done) ->
 
-            promised = objective.injector null, ->
+            promised = objective.injector ->
 
                 result = null
                 p = promise (resolve, reject) -> 
@@ -210,7 +211,7 @@ describe.only 'Objective Injector', ->
 
         it 'sends injection error into function', (done) ->
 
-            objective.injector null,
+            objective.injector
 
                 onInjectError: (e) -> 
                     e.toString().should.match /Cannot find module/
@@ -225,7 +226,7 @@ describe.only 'Objective Injector', ->
 
         it 'sets to run even with injection error', (done) ->
 
-            objective.injector null,
+            objective.injector
 
                 ignoreInjectError: true
 
@@ -237,7 +238,7 @@ describe.only 'Objective Injector', ->
 
         it 'can get error into injection target via promise start extension', (done) ->
 
-            promised = objective.injector null, ignoreInjectError: true, (noSuchModule) ->
+            promised = objective.injector ignoreInjectError: true, (noSuchModule) ->
 
                 p = promise (resolve) -> resolve()
                 p.start = (e) -> 
@@ -252,7 +253,7 @@ describe.only 'Objective Injector', ->
 
         it 'rejects the promise', (done) ->
 
-            objective.injector null, -> throw new Error 'Monday'
+            objective.injector -> throw new Error 'Monday'
 
             .catch (e) ->
 
@@ -271,7 +272,7 @@ describe.only 'Objective Injector', ->
             # would be tedious, so in walker.reset() the
             # promise is attached to objective.promised for use here
 
-            objective.injector null,
+            objective.injector
 
                 onMissingPromise: -> then: -> done()
 
