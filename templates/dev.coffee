@@ -9,6 +9,8 @@ objective
             testDir: 'test'
             testAppend: '_test'
             sourceDir: 'lib'
+            runAll: true
+            fullTrace: false
 
 .run (recurse) ->
 

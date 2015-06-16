@@ -8,7 +8,9 @@
     "objective-dev": {
       "testDir": "test",
       "testAppend": "_test",
-      "sourceDir": "lib"
+      "sourceDir": "lib",
+      "runAll": true,
+      "fullTrace": false
     }
   }
 }
