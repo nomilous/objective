@@ -19,7 +19,7 @@
     "isbinaryfile": "^2.0.4",
     "keypress": "^0.2.1",
     "mkpath": "^0.1.0",
-    "objective-dev": "0.0.12",
+    "objective-dev": "0.0.13",
     "prompt": "^0.2.14",
     "request": "^2.55.0",
     "shortid": "^2.2.2",

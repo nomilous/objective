@@ -208,15 +208,19 @@ describe.only 'Objective Injector', ->
 
         promise = require('when').promise
 
-        it 'does not run injection target on error', (done) ->
+        it 'sends injection error into function', (done) ->
 
             objective.injector null,
 
-                onInjectError: -> done()
+                onInjectError: (e) -> 
+                    e.toString().should.match /Cannot find module/
+                    return new Error 'Can Filter Error'
+                redirectInjectError: true
 
-                (noSuchModule) ->
+                (e, noSuchModule) ->
 
-                    throw new Error 'Not!'
+                    e.toString().should.match /Can Filter Error/
+                    done()
 
 
         it 'sets to run even with injection error', (done) ->
