@@ -11,6 +11,7 @@ objective
             sourceDir: 'lib'
             runAll: true
             fullTrace: false
+            filterTrace: false
 
 .run (recurse) ->
 
