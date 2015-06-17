@@ -1,8 +1,8 @@
-// plugins require $$name
+
 
 module.exports.$$name = 'example'
 
-module.exports.create = function(root, config, callback) {
+module.exports.$$createInstance = function(root, config, callback) {
 
   // callback with (err, thePluginInstance)
   // 
