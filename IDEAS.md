@@ -51,12 +51,12 @@ objective( '...',
 
 ```
 
-Or even!
+### Or even!
 
 ```javascript
 objective( '...',
   function(
-    data,     // $get psql db -c '.. OUTER JOIN .. INNER PEACE .. WHERE ..'
+    data,     // $get psql db -c '.. OUTER JOIN .. INNER PEACE .. WHERE .. WHY ..' | makeJson
     express, // $do npm install express@v
     even    // $get wget -q -O - "$@" https://raw.githubusercontent.com/joyent/node/master/doc/api/readline.markdown
   ){
