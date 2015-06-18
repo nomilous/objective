@@ -1,4 +1,4 @@
-## Injection comment module install spec posibility thing. 
+## Injection comment module install spec possibility thing. 
 
 While ensuring the injection argument parser could take a beating,<br />
 
