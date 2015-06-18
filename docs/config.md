@@ -8,9 +8,9 @@ objective( 'make cookies', {
     'thing': {
       be: function() {}
     },
-    'Or' : require('||')
+    'or' : require('||')
   }
-}, function(eo, thing, Or) {
+}, function(eo, thing, or) {
   
   thing.be(new or(eo));
 
