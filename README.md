@@ -1,4 +1,4 @@
-[1]:https://github.com/nomilous/objective-dev
+[1]:https://github.com/nomilous/objective_dev
 [2]:https://github.com/nomilous/objective-examples
 
 objective
