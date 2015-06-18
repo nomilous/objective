@@ -1,6 +1,3 @@
-[1]:https://github.com/nomilous/objective_dev
-[2]:https://github.com/nomilous/objective-examples
-
 objective
 =========
 
@@ -13,3 +10,8 @@ objective
 <b>On windows there may still be problems...</b><br />
 Your fix(s) will be greatly appreciated. <br />
 I'm happy to help.
+
+
+
+[1]:https://github.com/nomilous/objective_dev
+[2]:https://github.com/nomilous/objective_examples
