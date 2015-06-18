@@ -5,7 +5,7 @@ objective
     description: ''
     repl: listen: '/tmp/socket-__UUID__'
     plugins: 
-        'objective-dev':
+        'objective_dev':
             testDir: 'test'
             testAppend: '_test'
             sourceDir: 'lib'

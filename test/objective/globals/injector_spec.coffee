@@ -265,7 +265,7 @@ describe.only 'Objective Injector', ->
 
         it 'calls for a promise', (done) ->
 
-            # in the case of objective-dev the walker's promise
+            # in the case of objective_dev: the walker's promise
             # needs to be used as the objective promise,
             # 
             # to explicityly return the promise from the test
