@@ -1,7 +1,7 @@
 {
   "name": "objective",
   "description": "",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "bin": {
     "objective": "./bin/objective"
   },
@@ -18,7 +18,7 @@
     "isbinaryfile": "^2.0.4",
     "keypress": "^0.2.1",
     "mkpath": "^0.1.0",
-    "objective_dev": "0.0.16",
+    "objective_dev": "0.0.17",
     "prompt": "^0.2.14",
     "shortid": "^2.2.2",
     "uuid": "^2.0.1",
