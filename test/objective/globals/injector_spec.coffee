@@ -6,6 +6,7 @@ describe.only 'Objective Injector', ->
 
     before ->
         @origError = objective.logger.error
+        @root = home: '/'
 
     beforeEach ->
         objective.logger.error = @origError
@@ -146,6 +147,7 @@ describe.only 'Objective Injector', ->
 
             objective.injector
 
+                root: @root
                 args: [1,2]
                 next: done
 
@@ -158,6 +160,8 @@ describe.only 'Objective Injector', ->
         it 'calls onInjectError', (done) ->
 
             objective.injector
+
+                root: @root
 
                 onInjectError: (e) ->
 
@@ -212,7 +216,7 @@ describe.only 'Objective Injector', ->
         it 'sends injection error into function', (done) ->
 
             objective.injector
-
+                root: @root, 
                 onInjectError: (e) -> 
                     e.toString().should.match /Cannot find module/
                     return new Error 'Can Filter Error'
@@ -238,7 +242,7 @@ describe.only 'Objective Injector', ->
 
         it 'can get error into injection target via promise start extension', (done) ->
 
-            promised = objective.injector ignoreInjectError: true, (noSuchModule) ->
+            promised = objective.injector root: @root, ignoreInjectError: true, (noSuchModule) ->
 
                 p = promise (resolve) -> resolve()
                 p.start = (e) -> 
