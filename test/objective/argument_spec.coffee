@@ -4,8 +4,6 @@ describe.only 'ObjectiveArgument', ->
 
     OArg = require('../../lib/objective/argument')
 
-    it 'needs a catchy name', ->
-
     context 'parse()', ->
 
         it 'parses function arguments and returns array', ->
@@ -59,5 +57,5 @@ describe.only 'ObjectiveArgument', ->
             ) {});
             
             `
-            console.log result
+            result[0].name.should.equal 'p'
 
