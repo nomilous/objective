@@ -6,6 +6,4 @@ objective
     repl: listen: '/tmp/socket-__UUID__'
     plugins: {}
 
-.run (prompt) ->
-
-    prompt.start()
+.run ->

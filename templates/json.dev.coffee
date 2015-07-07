@@ -1,6 +1,2 @@
-objective '__TITLE__', (recurse) ->
+objective '__TITLE__', ->
 
-    ### search for files to watch / run tests on changes ###
-
-    recurse ['lib', 'test'], createDir: true
-    .then ->

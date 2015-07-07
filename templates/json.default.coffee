@@ -1,3 +1,3 @@
-objective '__TITLE__', (prompt) ->
+objective '__TITLE__', ->
 
-    ### prompt.start() ###
+    

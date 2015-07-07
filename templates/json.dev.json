@@ -4,11 +4,12 @@
   "repl": {
     "listen": "/tmp/socket-__UUID__"
   },
+  "once": false,
   "plugins": {
     "objective_dev": {
+      "sourceDir": "lib",
       "testDir": "test",
       "testAppend": "_test",
-      "sourceDir": "lib",
       "runAll": true,
       "showTrace": false,
       "filterTrace": false
