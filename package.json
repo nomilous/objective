@@ -1,9 +1,10 @@
 {
   "name": "objective",
   "description": "",
-  "version": "0.0.27",
+  "version": "0.0.28",
   "bin": {
-    "objective": "./bin/objective"
+    "objective": "./bin/objective",
+    "o.": "./bin/o."
   },
   "scripts": {
     "test": "TESTING_OBJECTIVE_SELF=1 OBJECTIVE_DEV_PREPEND=_ node_modules/.bin/mocha --require should --compilers coffee:coffee-script/register test/**/**/*_spec.* test/**/*_spec.* test/*_spec.*",
@@ -18,7 +19,7 @@
     "isbinaryfile": "^2.0.4",
     "keypress": "^0.2.1",
     "mkpath": "^0.1.0",
-    "objective_dev": "0.0.20",
+    "objective_dev": "0.0.21",
     "prompt": "^0.2.14",
     "shortid": "^2.2.2",
     "uuid": "^2.0.1",
