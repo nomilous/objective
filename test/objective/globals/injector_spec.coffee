@@ -1,4 +1,4 @@
-describe.only 'Objective Injector', ->
+describe 'Objective Injector', ->
 
     require '../../../'
 

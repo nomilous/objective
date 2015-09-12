@@ -1,4 +1,4 @@
-describe.only 'ObjectiveArgument', ->
+describe 'ObjectiveArgument', ->
 
     should = require 'should'
 

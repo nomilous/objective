@@ -22,6 +22,7 @@
     "mkpath": "^0.1.0",
     "objective_dev": "0.0.21",
     "prompt": "^0.2.14",
+    "recursive-readdir": "^1.2.1",
     "shortid": "^2.2.2",
     "uuid": "^2.0.1",
     "when": "^3.7.3"
