@@ -2,7 +2,7 @@
   "name": "objective",
   "description": "",
   "license": "MIT",
-  "version": "0.0.36",
+  "version": "0.0.37",
   "bin": {
     "objective": "./bin/objective",
     "o.": "./bin/o."
